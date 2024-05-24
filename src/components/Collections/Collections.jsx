@@ -14,7 +14,8 @@ const Collections = () => {
     useEffect(() => {
         const fetchRoleAndCollections = async () => {
             try {
-                let collectionsResponse = await api.get(`/collections?filters[user_id][$eq]=${user.user_id}&populate=*`);
+                // let collectionsResponse = await api.get(`/collections?filters[user_id][$eq]=${user.user_id}&populate=*`);
+                let collectionsResponse = await api.get(`/collections?populate=*`);
                 setCollections(collectionsResponse.data || []);
                 setLoading(false);
             } catch (error) {

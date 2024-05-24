@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom';
 import api from "../utils/api";
 import {formatDate} from '../utils/formatDate';
 import {MdOutlineFavorite, MdOutlineFavoriteBorder} from "react-icons/md";
+import {useAuth} from "../../context/AuthContext";
 
 const ItemDetails = () => {
     const {id} = useParams();
@@ -10,6 +11,9 @@ const ItemDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [liked, setLiked] = useState(false);
+    const [likeId, setLikeId] = useState(null);
+    const {user} = useAuth();
+
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -23,8 +27,68 @@ const ItemDetails = () => {
             }
         };
 
+        const fetchLikeStatus = async () => {
+            if (user) {
+                try {
+                    const response = await api.get(`/likes?filters[item][id][$eq]=${id}&filters[user_liked_id][$eq]=${user.user_id}`);
+                    if (response.data && response.data.length > 0) {
+                        setLiked(true);
+                        setLikeId(response.data[0].id);
+                    } else {
+                        setLiked(false);
+                        setLikeId(null);
+                    }
+                } catch (error) {
+                    console.error('Error fetching like status:', error);
+                }
+            }
+        };
+
         fetchItem();
-    }, [id]);
+        fetchLikeStatus();
+    }, [id, user]);
+
+
+    const handleLike = async () => {
+        if (!user) return;
+
+        if (liked) {
+            if (!likeId) {
+                console.error('Error: likeId is not defined');
+                return;
+            }
+            try {
+                console.log(`Deleting like with id: ${likeId}`);
+                await api.delete(`/likes/${likeId}`);
+                console.log(`Successfully deleted like with id: ${likeId}`);
+                setLiked(false);
+                setLikeId(null);
+            } catch (error) {
+                console.error('Error deleting like:', error.response ? error.response.data : error.message);
+            }
+        } else {
+            try {
+                const response = await api.post('/likes', {
+                    data: {
+                        user_liked_id: user.user_id,
+                        user: user.id,
+                        item: id,
+                        user_favorite_item: {
+                            user_liked_id: user.user_id,
+                            item: id,
+                        }
+                    },
+                });
+                console.log('response.data post', response.data)
+                setLiked(true);
+                setLikeId(response.data.id);
+                console.log(`Successfully added like with id: ${response.data.id}`);
+            } catch (error) {
+                console.error('Error adding like:', error.response ? error.response.data : error.message);
+            }
+        }
+    };
+
 
     if (loading) {
         return <div>Loading...</div>;
@@ -32,6 +96,10 @@ const ItemDetails = () => {
 
     if (error) {
         return <div>Error: {error.message}</div>;
+    }
+
+    if (!item) {
+        return <div>No item data found.</div>;
     }
 
     const formatFieldValue = (value) => {
@@ -68,11 +136,13 @@ const ItemDetails = () => {
                             <MdOutlineFavorite
                                 size={35}
                                 style={{borderColor: '#000', fill: '#fd3040', cursor: 'pointer'}}
+                                onClick={handleLike}
                             />
                         ) : (
                             <MdOutlineFavoriteBorder
                                 size={35}
                                 style={{borderColor: '#000', cursor: 'pointer'}}
+                                onClick={handleLike}
                             />
                         )}
                     </div>

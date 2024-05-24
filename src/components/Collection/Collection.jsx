@@ -31,7 +31,6 @@ const Collection = () => {
         const fetchItems = async () => {
             try {
                 const response = await api.get(`/items?filters[collection][id][$eq]=${id}&populate=*`);
-                // const response = await api.get(`/items`);
                 setItems(response.data);
             } catch (error) {
                 setError(error);
