@@ -6,6 +6,7 @@ import './18n';
 import Preloader from "./components/Preloader/Preloader";
 import {AuthProvider} from "./context/AuthContext";
 import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
