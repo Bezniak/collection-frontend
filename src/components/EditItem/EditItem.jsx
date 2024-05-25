@@ -1,13 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useAuth} from "../../context/AuthContext";
+import {Button, Form, InputGroup, Image} from 'react-bootstrap';
 import api from "../utils/api";
+import Container from "react-bootstrap/Container";
 
 const EditItem = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const {user} = useAuth();
+    const userName = user ? user.username : '';
+    const userId = user ? user.user_id : '';
+
+
     const collectionId = new URLSearchParams(location.search).get('collection');
 
     const [item, setItem] = useState({
@@ -15,8 +21,8 @@ const EditItem = () => {
         tags: '',
         additionalFields: {},
         image_url: null,
-        user_name: user.username,
-        user_id: user.user_id,
+        user_name: userName,
+        user_id: userId,
         collection: collectionId
     });
     const [collection, setCollection] = useState(null);
@@ -35,8 +41,8 @@ const EditItem = () => {
                         tags: itemData.tags || '',
                         additionalFields: itemData.additionalFields || {},
                         image_url: itemData.image_url || null,
-                        user_name: itemData.user_name || user.username,
-                        user_id: itemData.user_id || user.user_id,
+                        user_name: itemData.user_name || userName,
+                        user_id: itemData.user_id || userId,
                         collection: itemData.collection || collectionId
                     });
                 }
@@ -144,7 +150,9 @@ const EditItem = () => {
     const renderField = (key, type) => {
         if (type === 'text') {
             return (
-                <textarea
+                <Form.Control
+                    as="textarea"
+                    style={{resize: "none"}}
                     name={key}
                     value={item.additionalFields[key] || ''}
                     onChange={handleFieldChange}
@@ -154,31 +162,27 @@ const EditItem = () => {
 
         if (type === 'boolean') {
             return (
-                <div>
-                    <label>
-                        <input
-                            type="checkbox"
-                            name={key}
-                            checked={item.additionalFields[key] || false}
-                            onChange={handleFieldChange}
-                        />
-                        Да
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            name={key}
-                            checked={!item.additionalFields[key]}
-                            onChange={handleFieldChange}
-                        />
-                        Нет
-                    </label>
+                <div className='d-flex gap-3'>
+                    <Form.Check
+                        type="checkbox"
+                        name={key}
+                        checked={item.additionalFields[key] || false}
+                        onChange={handleFieldChange}
+                        label="Да"
+                    />
+                    <Form.Check
+                        type="checkbox"
+                        name={key}
+                        checked={!item.additionalFields[key]}
+                        onChange={handleFieldChange}
+                        label="Нет"
+                    />
                 </div>
             );
         }
 
         return (
-            <input
+            <Form.Control
                 type={getInputType(type)}
                 name={key}
                 value={item.additionalFields[key] || ''}
@@ -203,55 +207,64 @@ const EditItem = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <h1>{id === 'new' ? 'Создать айтем' : 'Редактировать айтем'}</h1>
-                <label>
-                    Название:
-                    <input type="text"
-                           name="name"
-                           value={item.name}
-                           onChange={e => setItem({...item, name: e.target.value})}
-                    />
-                </label>
-                <label>
-                    Тэги:
-                    <input
-                        type="text"
-                        name="tags"
-                        value={item.tags}
-                        onChange={handleTagInputChange}
-                        onBlur={() => setSuggestions([])}
-                    />
-                    {suggestions.length > 0 && (
-                        <div className="suggestions">
-                            {suggestions.map((suggestion, index) => (
-                                <div key={index} onMouseDown={() => handleTagClick(suggestion.tag)}>
-                                    {suggestion.tag}
+        <Container>
+            <Form onSubmit={handleSubmit}>
+                <div>
+                    <h1 className='mt-5 mb-5 text-center'>{id === 'new' ? 'Создать айтем' : 'Редактировать айтем'}</h1>
+                    <Form.Group controlId="itemName">
+                        <Form.Label>Название:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="name"
+                            value={item.name}
+                            onChange={e => setItem({...item, name: e.target.value})}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="itemTags">
+                        <Form.Label>Тэги:</Form.Label>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                name="tags"
+                                value={item.tags}
+                                onChange={handleTagInputChange}
+                                onBlur={() => setSuggestions([])}
+                            />
+                            {suggestions.length > 0 && (
+                                <div className="suggestions">
+                                    {suggestions.map((suggestion, index) => (
+                                        <div key={index} onMouseDown={() => handleTagClick(suggestion.tag)}>
+                                            {suggestion.tag}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </label>
-                <label>
-                    Изображение:
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                    />
-                    {item.image_url && <img src={item.image_url} alt="Uploaded"/>}
-                </label>
-                {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
-                    <label key={key}>
-                        {key}:{renderField(key, collection.attributes.fields[key])}
-                    </label>
-                ))}
-                <button type="submit">Сохранить</button>
-            </div>
-        </form>
+                            )}
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group controlId="itemImage">
+                        <Form.Label>Изображение:</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                        />
+                        {item.image_url && <Image src={item.image_url} alt="Uploaded" thumbnail/>}
+                    </Form.Group>
+                    {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
+                        <Form.Group key={key} controlId={`itemField_${key}`}>
+                            <Form.Label>{key}:</Form.Label>
+                            {renderField(key, collection.attributes.fields[key])}
+                        </Form.Group>
+                    ))}
+                    <div className="text-center">
+                        <Button variant="primary" type="submit" className='mt-5 w-75'>
+                            Сохранить
+                        </Button>
+                    </div>
+                </div>
+            </Form>
+        </Container>
     );
 };
 
 export default EditItem;
-

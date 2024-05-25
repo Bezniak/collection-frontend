@@ -19,6 +19,7 @@ const Login = () => {
                 password: data.password
             });
             // Use login function from context to set user state
+            console.log('response logged in', response);
             login(response);
             // Optionally redirect user after login
             navigate('/');

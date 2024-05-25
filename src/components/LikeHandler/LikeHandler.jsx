@@ -1,9 +1,9 @@
-// src/components/LikeHandler.js
 import React, {useEffect, useState} from 'react';
 import {MdOutlineFavorite, MdOutlineFavoriteBorder} from "react-icons/md";
 import {toast} from 'react-toastify';
 import api from "../utils/api";
 import {useAuth} from "../../context/AuthContext";
+import './LikeHandler.css';
 
 const LikeHandler = ({itemId}) => {
     const [liked, setLiked] = useState(false);
@@ -14,10 +14,10 @@ const LikeHandler = ({itemId}) => {
         const fetchLikeStatus = async () => {
             if (user) {
                 try {
-                    const response = await api.get(`/likes?filters[item][id][$eq]=${itemId}&filters[user_liked_id][$eq]=${user.user_id}`);
-                    if (response.data && response.data.length > 0) {
+                    const response = await api.get(`/likes?filters[item][id][$eq]=${itemId}&filters[user][id][$eq]=${user.id}`);
+                    if (response?.data?.length > 0) {
                         setLiked(true);
-                        setLikeId(response.data[0].id);
+                        setLikeId(response?.data[0]?.id);
                     } else {
                         setLiked(false);
                         setLikeId(null);
@@ -53,13 +53,8 @@ const LikeHandler = ({itemId}) => {
             try {
                 const response = await api.post('/likes', {
                     data: {
-                        user_liked_id: user.user_id,
                         user: user.id,
                         item: itemId,
-                        user_favorite_item: {
-                            user_liked_id: user.user_id,
-                            item: itemId,
-                        }
                     },
                 });
                 setLiked(true);
@@ -71,16 +66,18 @@ const LikeHandler = ({itemId}) => {
     };
 
     return (
-        <div className="position-absolute top-0 end-0 m-3">
+        <div className="like-handler position-absolute top-0 end-0 m-3">
             {liked ? (
                 <MdOutlineFavorite
                     size={35}
-                    style={{borderColor: '#000', fill: '#fd3040', cursor: 'pointer'}}
+                    className="like-icon"
                     onClick={handleLike}
+                    style={{borderColor: '#000', fill: '#fd3040', cursor: 'pointer'}}
                 />
             ) : (
                 <MdOutlineFavoriteBorder
                     size={35}
+                    className="like-icon"
                     style={{borderColor: '#000', cursor: 'pointer'}}
                     onClick={handleLike}
                 />

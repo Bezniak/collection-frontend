@@ -1,0 +1,39 @@
+.like-handler {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.like-icon {
+    cursor: pointer;
+    transition: fill 0.3s ease;
+}
+
+.like-icon:hover {
+    fill: #fd3040;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .like-handler {
+        top: 20px !important;
+        right: 30px !important;
+    }
+
+    .like-icon {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .like-handler {
+        top: 5px;
+        right: 5px;
+    }
+
+    .like-icon {
+        width: 25px;
+        height: 25px;
+    }
+}

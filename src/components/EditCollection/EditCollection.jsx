@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {Button, Container, Form} from 'react-bootstrap';
 import api from "../utils/api";
-import { useAuth } from "../../context/AuthContext";
+import {useAuth} from "../../context/AuthContext";
 
 const EditCollection = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const {user} = useAuth();
 
     const [collection, setCollection] = useState({
         name: '',
@@ -49,7 +50,7 @@ const EditCollection = () => {
             ...prevState,
             additionalFields: [
                 ...prevState.additionalFields,
-                { name: '', type: 'string' }
+                {name: '', type: 'string'}
             ]
         }));
     };
@@ -62,11 +63,11 @@ const EditCollection = () => {
     };
 
     const handleFieldChange = (index, e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setCollection(prevState => ({
             ...prevState,
             additionalFields: prevState.additionalFields.map((field, i) => (
-                i === index ? { ...field, [name]: value } : field
+                i === index ? {...field, [name]: value} : field
             ))
         }));
     };
@@ -120,32 +121,35 @@ const EditCollection = () => {
     };
 
     return (
-        <div>
-            <h1>{id === 'new' ? 'Создать коллекцию' : 'Редактировать коллекцию'}</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Название:
-                    <input
+        <Container>
+            <h1 className='mt-5 mb-4 text-center'>{id === 'new' ? 'Создать коллекцию' : 'Редактировать коллекцию'}</h1>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group>
+                    <Form.Label>Название:</Form.Label>
+                    <Form.Control
                         type="text"
                         name="name"
                         value={collection.name}
-                        onChange={e => setCollection({ ...collection, name: e.target.value })}
+                        onChange={e => setCollection({...collection, name: e.target.value})}
                     />
-                </label>
-                <label>
-                    Описание:
-                    <textarea
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Описание:</Form.Label>
+                    <Form.Control
+                        as="textarea"
                         name="description"
                         value={collection.description}
-                        onChange={e => setCollection({ ...collection, description: e.target.value })}
+                        onChange={e => setCollection({...collection, description: e.target.value})}
+                        style={{resize: "none"}}
                     />
-                </label>
-                <label>
-                    Категория:
-                    <select
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Категория:</Form.Label>
+                    <Form.Control
+                        as="select"
                         name="category"
                         value={collection.category}
-                        onChange={e => setCollection({ ...collection, category: e.target.value })}
+                        onChange={e => setCollection({...collection, category: e.target.value})}
                     >
                         <option value="Books">Books</option>
                         <option value="Signs">Signs</option>
@@ -156,50 +160,64 @@ const EditCollection = () => {
                         <option value="Recipes">Recipes</option>
                         <option value="Coins">Coins</option>
                         <option value="Other">Other</option>
-                    </select>
-                </label>
-                <label>
-                    Изображение:
-                    <input
+                    </Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Изображение:</Form.Label>
+                    <Form.Control
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
                     />
-                    {collection.image_url && <img src={collection.image_url} alt="Uploaded" />}
-                </label>
-                <h2>Дополнительные поля</h2>
+                    {collection.image_url && <img src={collection.image_url} alt="Uploaded"/>}
+                </Form.Group>
+                <h2 className='mt-4 mb-4'>Дополнительные поля</h2>
                 {collection.additionalFields.map((field, index) => (
-                    <div key={index}>
-                        <label>
-                            Название поля:
-                            <input
-                                type="text"
-                                name="name"
-                                value={field.name}
-                                onChange={e => handleFieldChange(index, e)}
-                            />
-                        </label>
-                        <label>
-                            Тип:
-                            <select
-                                name="type"
-                                value={field.type}
-                                onChange={e => handleFieldChange(index, e)}
-                            >
-                                <option value="string">Строка</option>
-                                <option value="number">Число</option>
-                                <option value="text">Многострочный текст</option>
-                                <option value="boolean">Да/нет</option>
-                                <option value="date">Дата</option>
-                            </select>
-                        </label>
-                        <button type="button" onClick={() => handleRemoveField(index)}>Удалить поле</button>
+                    <div key={index} className="d-flex justify-content-center align-items-end">
+                        <div className="col-md-4">
+                            <Form.Group style={{marginRight: '20px'}}>
+                                <Form.Label>Название поля:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="name"
+                                    value={field.name}
+                                    onChange={e => handleFieldChange(index, e)}
+                                    style={{width: "100%"}}
+                                />
+                            </Form.Group>
+                        </div>
+                        <div className="col-md-4">
+                            <Form.Group style={{marginRight: '20px'}}>
+                                <Form.Label>Тип:</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    name="type"
+                                    value={field.type}
+                                    onChange={e => handleFieldChange(index, e)}
+                                    style={{width: "100%"}}
+                                >
+                                    <option value="string">Строка</option>
+                                    <option value="number">Число</option>
+                                    <option value="text">Многострочный текст</option>
+                                    <option value="boolean">Да/нет</option>
+                                    <option value="date">Дата</option>
+                                </Form.Control>
+                            </Form.Group>
+                        </div>
+                        <div className="col-md-4">
+                            <Button variant="danger" className='w-100' onClick={() => handleRemoveField(index)}>Удалить
+                                поле</Button>
+                        </div>
                     </div>
                 ))}
-                <button type="button" onClick={handleAddField}>Добавить поле</button>
-                <button type="submit">Сохранить</button>
-            </form>
-        </div>
+                <div className='text-center mt-4'>
+                    <Button variant="warning" className='w-25' onClick={handleAddField}>Добавить поле</Button>
+                </div>
+                <div className='mt-4 mb-4'>
+                    <Button type="submit" className='w-100 btn-secondary'>Сохранить</Button>
+                </div>
+            </Form>
+        </Container>
     );
 };
 
