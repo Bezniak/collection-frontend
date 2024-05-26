@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -10,19 +10,36 @@ import {NavLink} from 'react-router-dom';
 import {MdOutlineLightMode, MdOutlineNightsStay} from 'react-icons/md';
 import useLanguage from '../../hooks/useLanguage';
 import {useAuth} from "../../context/AuthContext";
+import api from "../utils/api";
 
 const NavbarComponent = () => {
     const {t} = useTranslation();
     const {currentLanguage, changeLanguage} = useLanguage();
     const {user, logout} = useAuth();
 
-    console.log('user from navbar', user)
 
     const handleLogout = () => {
         logout();
-        // setUser(null); // Clear user state
     };
 
+
+    // useEffect(() => {
+    //     const getRole = async () => {
+    //         try {
+    //             const response = await api.get(`/users-permissions/roles/${user.id}`);
+    //             console.log('Response status:', response.status);
+    //             console.log('Response data:', response.data);
+    //         } catch (error) {
+    //             console.error('Error fetching user role:', error);
+    //         }
+    //     };
+    //
+    //     if (user?.id) {
+    //         getRole();
+    //     } else {
+    //         console.warn('User ID is not defined');
+    //     }
+    // }, [user]);
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">

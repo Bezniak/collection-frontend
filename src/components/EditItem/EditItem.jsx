@@ -12,6 +12,7 @@ const EditItem = () => {
     const {user} = useAuth();
     const userName = user ? user.username : '';
     const userId = user ? user.user_id : '';
+    const userID = user ? user.user_id : '';
 
 
     const collectionId = new URLSearchParams(location.search).get('collection');
@@ -23,7 +24,7 @@ const EditItem = () => {
         image_url: null,
         user_name: userName,
         user_id: userId,
-        collection: collectionId
+        collection: collectionId,
     });
     const [collection, setCollection] = useState(null);
     const [allTags, setAllTags] = useState([]);
@@ -43,7 +44,8 @@ const EditItem = () => {
                         image_url: itemData.image_url || null,
                         user_name: itemData.user_name || userName,
                         user_id: itemData.user_id || userId,
-                        collection: itemData.collection || collectionId
+                        collection: itemData.collection || collectionId,
+                        user: itemData.id || ''
                     });
                 }
 
@@ -109,8 +111,17 @@ const EditItem = () => {
             }
         });
 
+        const data = {
+            name: item.name,
+            tags: item.tags,
+            user_name: user.username,
+            user_id: user.user_id,
+            collection: collectionId,
+            user: user.id,
+        };
+
         const formData = new FormData();
-        formData.append('data', JSON.stringify(item));
+        formData.append('data', JSON.stringify(data));
         if (image) {
             formData.append('files.image_url', image);
         }

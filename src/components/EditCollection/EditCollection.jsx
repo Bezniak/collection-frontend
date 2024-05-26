@@ -92,6 +92,7 @@ const EditCollection = () => {
             fields,
             user_id: user.user_id,
             user_name: user.username,
+            user: user.id,
         };
 
         const formData = new FormData();

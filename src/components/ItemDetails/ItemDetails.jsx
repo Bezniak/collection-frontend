@@ -4,7 +4,7 @@ import api from "../utils/api";
 import {formatDate} from '../utils/formatDate';
 import LikeHandler from "../LikeHandler/LikeHandler";
 import './ItemDetails.css';
-import Comment from "../../Comment/Comment";
+import Comment from "../Comment/Comment";
 import Preloader from "../Preloader/Preloader"; // Create a separate CSS file for custom styles
 
 const ItemDetails = () => {
