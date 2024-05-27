@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import {Alert, Button, Image, Table} from 'react-bootstrap';
+import {Alert, Button, Dropdown, DropdownButton, Image, Table} from 'react-bootstrap';
 import api from "../utils/api";
 import {formatDate} from "../utils/formatDate";
 import {useAuth} from "../../context/AuthContext";
@@ -15,8 +15,8 @@ const Collection = ({collection: propCollection, items: propItems}) => {
     const [loading, setLoading] = useState(!propCollection || !propItems);
     const [error, setError] = useState(null);
     const {user, role} = useAuth();
-
-    console.log('collection from collection', collection)
+    const [sortField, setSortField] = useState('id');
+    const [sortDirection, setSortDirection] = useState('ascending');
 
     useEffect(() => {
         const fetchCollection = async () => {
@@ -57,6 +57,27 @@ const Collection = ({collection: propCollection, items: propItems}) => {
         }
     };
 
+    const handleSortFieldChange = (field) => {
+        setSortField(field);
+    };
+
+    const handleSortDirectionChange = (direction) => {
+        setSortDirection(direction);
+    };
+
+    const sortedItems = [...items].sort((a, b) => {
+        const aValue = a.attributes[sortField];
+        const bValue = b.attributes[sortField];
+
+        if (aValue < bValue) {
+            return sortDirection === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+            return sortDirection === 'ascending' ? 1 : -1;
+        }
+        return 0;
+    });
+
     if (loading) {
         return <Preloader/>;
     }
@@ -84,6 +105,20 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                 </div>
             }
 
+            <div className="d-flex justify-content-end mb-4">
+                <DropdownButton id="dropdown-basic-button" title={`Sort by: ${sortField}`}>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('id')}>ID</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('name')}>Name</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('user_name')}>Created by</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('publishedAt')}>Publication date</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('updatedAt')}>Last modified date</Dropdown.Item>
+                </DropdownButton>
+                <DropdownButton id="dropdown-basic-button" title={`Direction: ${sortDirection}`} className="ms-2">
+                    <Dropdown.Item onClick={() => handleSortDirectionChange('ascending')}>Ascending</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortDirectionChange('descending')}>Descending</Dropdown.Item>
+                </DropdownButton>
+            </div>
+
             {items && (
                 <Table striped bordered hover>
                     <thead>
@@ -102,7 +137,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                     </tr>
                     </thead>
                     <tbody>
-                    {items.map(item => (
+                    {sortedItems.map(item => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
                             <td>
@@ -119,8 +154,8 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                             </td>
                             <td>{item.attributes.name}</td>
                             <td>{item.attributes.user_name}</td>
-                            <td>{formatDate(collection.attributes?.publishedAt)}</td>
-                            <td>{formatDate(collection.attributes?.updatedAt)}</td>
+                            <td>{formatDate(item.attributes?.publishedAt)}</td>
+                            <td>{formatDate(item.attributes?.updatedAt)}</td>
                             <td>{item.attributes.tags}</td>
                             {collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
                                 collection.attributes.fields[key] !== 'text' && (
@@ -132,11 +167,6 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                                     </td>
                                 )
                             ))}
-
-
-
-
-
                             <td>
                                 <Link to={`/item/${item.id}`}
                                       className="w-100 mb-2 btn btn-info btn-sm me-2">Открыть</Link>

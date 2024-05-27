@@ -10,6 +10,7 @@ const useFetchAllData = (url) => {
         try {
             setLoading(true);
             const res = await axios.get(process.env.REACT_APP_API_URL + url);
+            console.log('res.data', res.data)
             setData(res.data);
             return res.data; // Return the fetched data
         } catch (error) {

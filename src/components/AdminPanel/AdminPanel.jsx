@@ -18,6 +18,8 @@ const AdminPanel = () => {
     const {user, updateRole} = useAuth();  // Destructure updateRole from useAuth
     const jwt = Cookies.get('JWT');
 
+    console.log(data)
+
     console.log('data', data)
 
     const handleAction = async (status) => {
@@ -116,7 +118,7 @@ const AdminPanel = () => {
                     <span>Unblock</span>
                 </button>
                 <button className="btn btn-warning me-3 d-flex align-items-center justify-content-center"
-                        onClick={() => handleAdmin(4)}> {/* Assuming role ID 4 is for Admin */}
+                        onClick={() => handleAdmin(3)}> {/* Assuming role ID 4 is for Admin */}
                     <GrUserAdmin className="me-1"/>
                     <span>Admin</span>
                 </button>
@@ -171,7 +173,7 @@ const AdminPanel = () => {
                         <td>{formatDate(user.updatedAt)}</td>
                         <td>{user.blocked ? 'Blocked' : 'Active'}</td>
                         <td>{user.confirmed ? 'Yes' : 'No'}</td>
-                        <td>{user.role.type}</td>
+                        <td>{user?.role?.type}</td>
                         <td className='d-flex flex-column'>
                             {user?.collections.length
                                 ? (

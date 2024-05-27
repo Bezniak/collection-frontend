@@ -13,6 +13,7 @@ import EditItem from "./components/EditItem/EditItem";
 import EditCollection from "./components/EditCollection/EditCollection";
 import NotFound from "./components/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import SearchResults from "./components/NavbarComponent/SearchResults";
 
 
 const Layout = () => {
@@ -63,13 +64,17 @@ const router = createBrowserRouter([
                 path: "/adminPanel",
                 element: (
                     <ProtectedRoute requiredRole="admin">
-                        <AdminPanel />
+                        <AdminPanel/>
                     </ProtectedRoute>
                 ),
             },
             {
                 path: "/item/:id",
                 element: <ItemDetails/>
+            },
+            {
+                path: "/search",
+                element: <SearchResults/>
             },
         ]
     },
@@ -78,8 +83,8 @@ const router = createBrowserRouter([
 const App = () => {
     return (
         <RouterProvider router={router}/>
-)
-    ;
+    )
+        ;
 };
 
 export default App;
