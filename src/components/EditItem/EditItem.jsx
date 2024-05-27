@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import {useAuth} from "../../context/AuthContext";
-import {Button, Form, InputGroup, Image} from 'react-bootstrap';
+import {Button, Form, Image, InputGroup} from 'react-bootstrap';
 import api from "../utils/api";
 import Container from "react-bootstrap/Container";
 
@@ -26,6 +26,10 @@ const EditItem = () => {
         user_id: userId,
         collection: collectionId,
     });
+
+
+    console.log(item)
+
     const [collection, setCollection] = useState(null);
     const [allTags, setAllTags] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
@@ -118,6 +122,7 @@ const EditItem = () => {
             user_id: user.user_id,
             collection: collectionId,
             user: user.id,
+            additionalFields: item.additionalFields,
         };
 
         const formData = new FormData();

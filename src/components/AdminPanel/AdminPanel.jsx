@@ -3,19 +3,22 @@ import axios from "axios";
 import useFetchAllData from "../utils/useFetchAllData";
 import Preloader from "../Preloader/Preloader";
 import {Alert, Table} from "react-bootstrap";
-import {FaLock, FaLockOpen} from "react-icons/fa";
+import {FaLock, FaLockOpen, FaUserLock} from "react-icons/fa";
 import {RiDeleteBin6Line} from "react-icons/ri";
 import {formatDate} from "../utils/formatDate";
 import Cookies from "js-cookie";
-
+import {GrUserAdmin} from "react-icons/gr";
+import {useAuth} from "../../context/AuthContext";
+import {NavLink} from "react-router-dom";
+import Container from "react-bootstrap/Container";
 
 const AdminPanel = () => {
     const {data, loading, error, refetch} = useFetchAllData(`/users?populate=*`);
     const [selectedUsers, setSelectedUsers] = useState([]);
-
-    console.log(data)
-
+    const {user, updateRole} = useAuth();  // Destructure updateRole from useAuth
     const jwt = Cookies.get('JWT');
+
+    console.log('data', data)
 
     const handleAction = async (status) => {
         try {
@@ -34,10 +37,32 @@ const AdminPanel = () => {
         }
     };
 
+    const handleAdmin = async (roleId) => {
+        try {
+            await Promise.all(selectedUsers.map(async (userId) => {
+                await axios.put(process.env.REACT_APP_API_URL + `/users/${userId}`, {
+                    role: roleId
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`
+                    }
+                });
+            }));
+            // Update current user's role if they changed their own role
+            if (selectedUsers.includes(user.id)) {
+                const newRole = roleId === 1 ? 'Authenticated' : 'Admin';
+                updateRole(newRole);
+            }
+            await refetch();
+        } catch (error) {
+            console.error(`Error changing role:`, error);
+        }
+    };
+
     const handleDeleteUser = async () => {
         try {
             await Promise.all(selectedUsers.map(async (userId) => {
-                await axios.delete(process.env.REACT_APP_API_URL + `/users/${userId}`, {
+                await axios.delete(process.env.REACT_APP_API_URL + `/users/${userId}?populate=*`, {
                     headers: {
                         Authorization: `Bearer ${jwt}`
                     }
@@ -68,14 +93,16 @@ const AdminPanel = () => {
 
     if (error) {
         return (
-            <Alert variant="danger" className="m-5">
-                Error: {error.message}
-            </Alert>
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
         );
     }
 
     return (
-        <div className="container m-5">
+        <Container fluid="md" style={{width: '80%'}}>
             <h1 className="text-center mb-4 fs-2">Users</h1>
             <div className='mb-3 d-flex justify-content-start'>
                 <button className="btn btn-primary me-3 d-flex align-items-center justify-content-center"
@@ -83,13 +110,25 @@ const AdminPanel = () => {
                     <FaLock className="me-1"/>
                     <span>Block</span>
                 </button>
-                <button className="btn btn-secondary me-3 d-flex align-items-center justify-content-center"
+                <button className="btn btn-outline-primary me-3 d-flex align-items-center justify-content-center"
                         onClick={() => handleAction(false)}>
                     <FaLockOpen className="me-1"/>
+                    <span>Unblock</span>
+                </button>
+                <button className="btn btn-warning me-3 d-flex align-items-center justify-content-center"
+                        onClick={() => handleAdmin(4)}> {/* Assuming role ID 4 is for Admin */}
+                    <GrUserAdmin className="me-1"/>
+                    <span>Admin</span>
+                </button>
+                <button className="btn btn-outline-warning me-3 d-flex align-items-center justify-content-center"
+                        onClick={() => handleAdmin(1)}> {/* Assuming role ID 1 is for Authenticated */}
+                    <FaUserLock className="me-1"/>
+                    <span>Not admin</span>
                 </button>
                 <button className="btn btn-danger d-flex align-items-center justify-content-center"
                         onClick={handleDeleteUser}>
                     <RiDeleteBin6Line className="me-1"/>
+                    <span>Delete</span>
                 </button>
             </div>
             <Table striped bordered hover responsive="md" className="w-100">
@@ -107,8 +146,11 @@ const AdminPanel = () => {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Registration Date</th>
-                    <th>Last Login Date</th>
+                    <th>Last update Date</th>
                     <th>Status</th>
+                    <th>Confirmed</th>
+                    <th>Role</th>
+                    <th>Collections list</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -128,11 +170,27 @@ const AdminPanel = () => {
                         <td>{formatDate(user.createdAt)}</td>
                         <td>{formatDate(user.updatedAt)}</td>
                         <td>{user.blocked ? 'Blocked' : 'Active'}</td>
+                        <td>{user.confirmed ? 'Yes' : 'No'}</td>
+                        <td>{user.role.type}</td>
+                        <td className='d-flex flex-column'>
+                            {user?.collections.length
+                                ? (
+                                    user?.collections?.map((collection) => (
+                                        <NavLink
+                                            to={`/collections/${user.id}`}
+                                            key={collection.id}
+                                        >
+                                            {collection.name}
+                                        </NavLink>
+                                    )))
+                                : <p>0</p>
+                            }
+                        </td>
                     </tr>
                 ))}
                 </tbody>
             </Table>
-        </div>
+        </Container>
     );
 }
 

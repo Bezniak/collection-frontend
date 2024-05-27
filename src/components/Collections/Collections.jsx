@@ -1,43 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import Preloader from '../Preloader/Preloader';
 import api from "../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import { MdOutlineImageNotSupported } from "react-icons/md";
 import { formatDate } from "../utils/formatDate";
-import { Table, Button, Container } from 'react-bootstrap';
+import { Alert, Button, Container, Table } from 'react-bootstrap';
 
-const Collections = () => {
+const Collections = ({ collections: propCollections }) => {
+    const { userId } = useParams();
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { user } = useAuth();
+    const [error, setError] = useState(null);
+    const { user, role } = useAuth();
+
+    console.log('role', role)
 
     useEffect(() => {
-        const fetchRoleAndCollections = async () => {
+        const fetchCollections = async () => {
             try {
-                let collectionsResponse = await api.get(`/collections?populate=*`);
+                let collectionsResponse;
+                if (userId) {
+                    collectionsResponse = await api.get(`/collections?filters[user][id][$eq]=${userId}&populate=*`);
+                } else {
+                    collectionsResponse = await api.get(`/collections?filters[user][id][$eq]=${user.id}&populate=*`);
+                }
                 setCollections(collectionsResponse.data || []);
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching role and collections:", error);
+                setError(error);
                 setLoading(false);
             }
         };
 
-        fetchRoleAndCollections();
-    }, [user]);
+        fetchCollections();
+    }, [userId, user]);
 
     const handleDelete = async (id) => {
         try {
             await api.delete(`/collections/${id}`);
             setCollections(collections.filter(collection => collection.id !== id));
         } catch (error) {
-            console.error("Error deleting collection:", error);
+            setError(error);
         }
     };
 
     if (loading) {
         return <Preloader />;
+    }
+
+    if (error) {
+        return (
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
+        );
     }
 
     return (
@@ -90,12 +109,14 @@ const Collections = () => {
                                     <Link to={`/collection/${collection.id}`} className="btn btn-info btn-sm me-2">
                                         Открыть
                                     </Link>
-                                    {(user?.user_id === collection.attributes?.user_id) && (
+                                    {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
                                         <>
-                                            <Link to={`/edit-collection/${collection.id}`} className="btn btn-warning btn-sm me-2">
+                                            <Link to={`/edit-collection/${collection.id}`}
+                                                  className="btn btn-warning btn-sm me-2">
                                                 Редактировать
                                             </Link>
-                                            <Button variant="danger" size="sm" onClick={() => handleDelete(collection.id)}>
+                                            <Button variant="danger" size="sm"
+                                                    onClick={() => handleDelete(collection.id)}>
                                                 Удалить
                                             </Button>
                                         </>

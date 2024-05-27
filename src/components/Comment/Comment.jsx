@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import { toast } from 'react-toastify';
+import {Button, Card, Col, Container, Form, Row} from 'react-bootstrap';
+import {useAuth} from '../../context/AuthContext';
+import {toast} from 'react-toastify';
 import api from '../utils/api';
-import { formatDate } from '../utils/formatDate';
+import {formatDate} from '../utils/formatDate';
 import Preloader from '../Preloader/Preloader';
-import { NavLink } from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
-const Comment = ({ itemId }) => {
+const Comment = ({itemId}) => {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [editingCommentId, setEditingCommentId] = useState(null); // Добавляем состояние для хранения id комментария, который редактируется
-    const { user } = useAuth();
+    const {user, role} = useAuth();
 
     const getAllComments = async () => {
         try {
@@ -75,8 +75,6 @@ const Comment = ({ itemId }) => {
     };
 
 
-
-
     const onDelete = async (commentId) => {
         try {
             await api.delete(`/comments/${commentId}`);
@@ -88,10 +86,13 @@ const Comment = ({ itemId }) => {
 
     const onEdit = async (commentId, newText) => {
         try {
-            await api.put(`/comments/${commentId}`, { data: { text: newText } });
+            await api.put(`/comments/${commentId}`, {data: {text: newText}});
             setComments(
                 comments.map((comment) =>
-                    comment.id === commentId ? { ...comment, attributes: { ...comment.attributes, text: newText } } : comment
+                    comment.id === commentId ? {
+                        ...comment,
+                        attributes: {...comment.attributes, text: newText}
+                    } : comment
                 )
             );
             setEditingCommentId(null);
@@ -101,7 +102,7 @@ const Comment = ({ itemId }) => {
     };
 
     if (loading) {
-        return <Preloader />;
+        return <Preloader/>;
     }
 
     if (error) {
@@ -118,7 +119,7 @@ const Comment = ({ itemId }) => {
                                 <Form.Control
                                     as="textarea"
                                     placeholder="Leave a comment here"
-                                    style={{ height: '150px', resize: 'none' }}
+                                    style={{height: '150px', resize: 'none'}}
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
                                 />
@@ -195,7 +196,7 @@ const Comment = ({ itemId }) => {
                                     ) : (
                                         <>
                                             <Card.Text>{comment.attributes.text}</Card.Text>
-                                            {user && user.id === comment.attributes.user.data.id && (
+                                            {(user && user.id === comment.attributes.user.data.id || role === 'admin') && (
                                                 <>
                                                     <Button
                                                         variant="primary"

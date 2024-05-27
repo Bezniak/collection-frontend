@@ -12,6 +12,7 @@ import ItemDetails from "./components/ItemDetails/ItemDetails";
 import EditItem from "./components/EditItem/EditItem";
 import EditCollection from "./components/EditCollection/EditCollection";
 import NotFound from "./components/NotFound/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 
 const Layout = () => {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
                 element: <Collection/>
             },
             {
-                path: "/collections",
+                path: "/collections/:userId?",
                 element: <Collections/>
             },
             {
@@ -60,7 +61,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/adminPanel",
-                element: <AdminPanel/>
+                element: (
+                    <ProtectedRoute requiredRole="admin">
+                        <AdminPanel />
+                    </ProtectedRoute>
+                ),
             },
             {
                 path: "/item/:id",

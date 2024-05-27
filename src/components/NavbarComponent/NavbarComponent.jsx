@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useTranslation} from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -6,40 +6,26 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import {MdOutlineLightMode, MdOutlineNightsStay} from 'react-icons/md';
 import useLanguage from '../../hooks/useLanguage';
 import {useAuth} from "../../context/AuthContext";
-import api from "../utils/api";
+import Dropdown from 'react-bootstrap/Dropdown';
+import {DropdownButton} from "react-bootstrap";
 
 const NavbarComponent = () => {
     const {t} = useTranslation();
     const {currentLanguage, changeLanguage} = useLanguage();
-    const {user, logout} = useAuth();
-
+    const {user, logout, role} = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
     };
 
-
-    // useEffect(() => {
-    //     const getRole = async () => {
-    //         try {
-    //             const response = await api.get(`/users-permissions/roles/${user.id}`);
-    //             console.log('Response status:', response.status);
-    //             console.log('Response data:', response.data);
-    //         } catch (error) {
-    //             console.error('Error fetching user role:', error);
-    //         }
-    //     };
-    //
-    //     if (user?.id) {
-    //         getRole();
-    //     } else {
-    //         console.warn('User ID is not defined');
-    //     }
-    // }, [user]);
+    const handleNavigate = (path) => {
+        navigate(path);
+    };
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -48,7 +34,6 @@ const NavbarComponent = () => {
                 <Navbar.Toggle aria-controls="navbarScroll"/>
                 <Navbar.Collapse id="navbarScroll">
                     <Nav className="me-auto my-2 my-lg-0" style={{maxHeight: '100px'}} navbarScroll>
-
                         {user
                             ? <NavLink to="/" onClick={handleLogout} className="nav-link">{t("logout")}</NavLink>
                             : (
@@ -58,7 +43,6 @@ const NavbarComponent = () => {
                                 </>
                             )
                         }
-
 
                         <NavDropdown title={t("language")} id="navbarScrollingDropdown">
                             <NavDropdown.Item onClick={() => changeLanguage('en')}>
@@ -82,13 +66,17 @@ const NavbarComponent = () => {
                         </NavDropdown>
                     </Nav>
 
-
                     {user && (
-                        <Navbar.Collapse className="justify-content-center">
-                            {t("welcome_message")}&nbsp; <NavLink to='/collections' className="nav-link">{user.username}</NavLink>
-                        </Navbar.Collapse>
+                        <DropdownButton id="dropdown-basic-button" title="Dropdown button" variant='info'>
+                            <Dropdown.Item onClick={() => handleNavigate('/collections')}>My collections</Dropdown.Item>
+                            {role === 'admin' && (
+                                <>
+                                    <Dropdown.Divider/>
+                                    <Dropdown.Item onClick={() => handleNavigate('/adminPanel')}>Admin Panel</Dropdown.Item>
+                                </>
+                            )}
+                        </DropdownButton>
                     )}
-
 
                     <Form className="d-flex">
                         <Form.Control type="search" placeholder={t("search")} className="me-2" aria-label="Search"/>
