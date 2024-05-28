@@ -5,15 +5,18 @@ import {useAuth} from "../../context/AuthContext";
 import {useNavigate} from "react-router-dom";
 import api from "../utils/api";
 import {v4 as uuidv4} from 'uuid';
+import {Button} from "react-bootstrap";
 
 const Register = () => {
     const {register, handleSubmit, formState: {errors}, reset} = useForm();
     const [errorMessage, setErrorMessage] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const {login} = useAuth();
     const navigate = useNavigate();
     const {t} = useTranslation();
 
     const onSubmit = async (data) => {
+        setIsSubmitting(true);
         try {
             const user_id = uuidv4();
             const userData = {...data, user_id};
@@ -27,6 +30,8 @@ const Register = () => {
             } else {
                 setErrorMessage(t('unexpected_error'));
             }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -84,7 +89,9 @@ const Register = () => {
                     )}
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100 mb-4">{t('register')}</button>
+                <Button type="submit" className="btn btn-primary w-100 mb-4" disabled={isSubmitting}>
+                    {isSubmitting ? t('submitting') : t('register')}
+                </Button>
             </form>
             {errorMessage && <div className="alert alert-danger w-50 text-center">{errorMessage}</div>}
         </div>

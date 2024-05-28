@@ -1,5 +1,5 @@
 {
-  "welcome_message": "Welcome,",
+  "welcome_message": "Welcome, ",
   "username": "Name",
   "email": "Email",
   "enter_name": "Enter your name",
@@ -98,7 +98,20 @@
   "create_item": "Create item",
   "edit_item": "Edit item",
   "no_item_data_found": "No item data found",
-  "like_rule": "You must be logged in to like item"
+  "like_rule": "You must be logged in to like item",
+  "menu": "Menu",
+  "admin_panel": "Admin Panel",
+  "searchResults": "Search Results",
+  "noResults": "Oops... No results found :(",
+  "loading": "Loading",
+  "access_denied": "Access is denied!",
+  "submitting": "Submitting",
+  "no_collection": "No collection",
+  "unknown": "Unknown",
+  "most_popular_tags": "Most popular tags",
+  "latest_added_items": "Latest added items",
+  "author": "Author",
+  "5_largest_collections": "5 largest collections"
 
 
 

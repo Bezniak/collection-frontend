@@ -1,13 +1,13 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import {NavLink, useLocation} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import './SearchResults.css';
 
 const SearchResults = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const location = useLocation();
     const results = location.state?.results || [];
 
@@ -33,9 +33,6 @@ const SearchResults = () => {
                                             </NavLink>
                                         )}
                                     </Card.Title>
-                                    <Card.Text className="text-muted">
-                                        {result.description || t('noDescription')}
-                                    </Card.Text>
                                 </Card.Body>
                             </Card>
                         </ListGroup.Item>

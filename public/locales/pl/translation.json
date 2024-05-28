@@ -1,5 +1,5 @@
 {
-  "welcome_message": "Witamy,",
+  "welcome_message": "Witamy, ",
   "username": "Nazwa",
   "email": "E-mail",
   "enter_name": "Wpisz swoje imię",
@@ -98,7 +98,30 @@
   "create_item": "Utwórz element",
   "edit_item": "Edytuj rzecz",
   "no_item_data_found": "Nie znaleziono danych elementu",
-  "like_rule": "Aby polubić przedmiot, musisz się zalogować"
+  "like_rule": "Aby polubić przedmiot, musisz się zalogować",
+  "menu": "Menu",
+  "admin_panel": "Panel administratora",
+  "searchResults": "Wyniki wyszukiwania",
+  "noResults": "Ups... Nie znaleziono żadnych wyników :(",
+  "loading": "Ładowanie...",
+  "access_denied": "Odmowa dostępu!",
+  "submitting": "Przedkładający",
+  "no_collection": "Brak kolekcji",
+  "unknown": "Nieznany",
+  "most_popular_tags": "Najpopularniejsze tagi",
+  "latest_added_items": "Ostatnio dodane elementy",
+  "author": "Autor",
+  "5_largest_collections": "5 największych kolekcji"
+
+
+
+
+
+
+
+
+
+
 
 
 

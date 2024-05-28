@@ -6,31 +6,37 @@ import {useNavigate} from "react-router-dom";
 import api from "../utils/api";
 
 const Login = () => {
-    const {register, handleSubmit, formState: {errors}} = useForm();
-    const [error, setError] = useState('');
     const {t} = useTranslation();
+    const {
+        register,
+        handleSubmit,
+        formState:
+            {errors}
+    } = useForm();
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const {login} = useAuth();
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
             const response = await api.post('/auth/local', {
                 identifier: data.email,
                 password: data.password
             });
-            // Use login function from context to set user state
             console.log('response logged in', response);
             login(response);
-            // Optionally redirect user after login
             navigate('/');
         } catch (error) {
-            // Handle authentication error
-            if (error.response && error.response.data && error.response.data.error) {
+            if (error?.response?.data?.error) {
                 const strapiErrorMessage = error.response.data.error.message;
                 setError(strapiErrorMessage);
             } else {
                 setError(t("unexpected_error"));
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -82,15 +88,11 @@ const Login = () => {
                     </div>
                 )}
 
-                <button type="submit" className="btn btn-primary w-100 mb-4">{t("login")}</button>
+                <button type="submit" className="btn btn-primary w-100 mb-4"
+                        disabled={isLoading}>{isLoading ? t("sending") : t("login")}</button>
             </form>
         </div>
     );
 };
 
 export default Login;
-
-
-
-
-
