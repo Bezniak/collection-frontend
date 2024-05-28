@@ -9,6 +9,8 @@ const Home = () => {
     const [latestItems, setLatestItems] = useState([]);
     const [largestCollections, setLargestCollections] = useState([]);
 
+    console.log('latestItems', latestItems)
+
     useEffect(() => {
         const fetchPopularTags = async () => {
             try {
@@ -42,13 +44,17 @@ const Home = () => {
         const fetchLatestItems = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/items?sort=createdAt:desc&populate=*`);
+                console.log(response.data.data)
 
-                const items = response.data.data.map(item => ({
-                    name: item.attributes.name,
-                    collection: item.attributes.collection.data.attributes.name,
-                    author: item.attributes.user_name,
-                    id: item.id
-                }));
+                const items = response.data.data.map(item => {
+                    const collectionName = item.attributes.collection?.data?.attributes?.name || 'Без коллекции';
+                    return {
+                        name: item.attributes.name,
+                        collection: collectionName,
+                        author: item.attributes.user?.data?.attributes?.username || 'Unknown',
+                        id: item.id
+                    };
+                });
 
                 setLatestItems(items);
             } catch (error) {
@@ -56,13 +62,14 @@ const Home = () => {
             }
         };
 
+
         const fetchLargestCollections = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/collections?populate=*`);
                 const collections = response.data.data.map(collection => ({
                     id: collection.id,
                     name: collection.attributes.name,
-                    itemCount: collection.attributes.items.data.length
+                    itemCount: collection.attributes.items?.data?.length || 0
                 }));
 
                 collections.sort((a, b) => b.itemCount - a.itemCount);

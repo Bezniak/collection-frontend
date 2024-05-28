@@ -69,11 +69,34 @@
   "logged_in": "logged in",
   "to_send_a_comment": "to send a comment",
   "no_comments_yet": "No comments yet",
-  "cancel": "Cancel"
-
-
-
-
+  "cancel": "Cancel",
+  "create_a_collection": "Create a collection",
+  "edit_collection": "Edit collection",
+  "name": "Name",
+  "uploaded": "Uploaded",
+  "additional_fields": "Additional fields",
+  "field_name": "Field name",
+  "type": "Type",
+  "string": "String",
+  "number": "Number",
+  "multiline_text": "Multiline text",
+  "yes_no": "Yes / No",
+  "date": "Date",
+  "delete_field": "Delete field",
+  "add_a_field": "Add a field",
+  "save": "Save",
+  "books": "Books",
+  "signs": "Signs",
+  "silverware": "Silverware",
+  "music": "Music",
+  "movies": "Movies",
+  "series": "Series",
+  "recipes": "Recipes",
+  "coins": "Coins",
+  "other": "Other",
+  "sending": "Sending...",
+  "create_item": "Create item",
+  "edit_item": "Edit item"
 
 
 

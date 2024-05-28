@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {Button, Container, Form} from 'react-bootstrap';
+import {Alert, Button, Container, Form} from 'react-bootstrap';
 import api from "../utils/api";
 import {useAuth} from "../../context/AuthContext";
+import {useTranslation} from "react-i18next";
+import Preloader from "../Preloader/Preloader";
 
 const EditCollection = () => {
+    const {t} = useTranslation();
     const {id} = useParams();
     const navigate = useNavigate();
     const {user} = useAuth();
-
+    const [image, setImage] = useState(null);
     const [collection, setCollection] = useState({
         name: '',
         description: '',
@@ -17,15 +20,17 @@ const EditCollection = () => {
         fields: {},
         additionalFields: []
     });
-
-    const [image, setImage] = useState(null);
+    const [loadingData, setLoadingData] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (id !== 'new') {
+            setLoadingData(true);
             api.get(`/collections/${id}?populate=*`)
                 .then(response => {
-                    if (response.data && response.data.attributes) {
-                        const data = response.data.attributes;
+                    if (response?.data?.attributes) {
+                        const data = response?.data?.attributes;
                         setCollection({
                             name: data.name || '',
                             description: data.description || '',
@@ -37,13 +42,19 @@ const EditCollection = () => {
                             })),
                             image_url: data.image_url ? data.image_url.url : null
                         });
+                        setError(null);
                     } else {
                         console.error("Response structure is incorrect", response);
+                        setError(t("error_loading_data"));
                     }
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                    console.error(error);
+                    setError(t("error_loading_data"));
+                })
+                .finally(() => setLoadingData(false));
         }
-    }, [id]);
+    }, [id, t]);
 
     const handleAddField = () => {
         setCollection(prevState => ({
@@ -79,6 +90,7 @@ const EditCollection = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        setLoadingSubmit(true);
 
         const fields = collection.additionalFields.reduce((acc, field) => {
             acc[field.name] = field.type;
@@ -115,107 +127,138 @@ const EditCollection = () => {
                 });
 
             await request;
+            setError(null);
             navigate('/collections');
         } catch (error) {
             console.error(error);
+            setError(t("error_saving_data"));
+        } finally {
+            setLoadingSubmit(false);
         }
     };
 
+    if (loadingData) {
+        return <Preloader/>
+    }
+
+    if (error) {
+        return (
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
+        );
+    }
+
     return (
         <Container>
-            <h1 className='mt-5 mb-4 text-center'>{id === 'new' ? 'Создать коллекцию' : 'Редактировать коллекцию'}</h1>
+            <h1 className='mt-5 mb-4 text-center'>{id === 'new' ? t("create_a_collection") : t("edit_collection")}</h1>
             <Form onSubmit={handleSubmit}>
                 <Form.Group>
-                    <Form.Label>Название:</Form.Label>
+                    <Form.Label>{t("name")}:</Form.Label>
                     <Form.Control
                         type="text"
                         name="name"
                         value={collection.name}
                         onChange={e => setCollection({...collection, name: e.target.value})}
+                        disabled={loadingSubmit}
                     />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Описание:</Form.Label>
+                    <Form.Label>{t("description")}</Form.Label>
                     <Form.Control
                         as="textarea"
                         name="description"
                         value={collection.description}
                         onChange={e => setCollection({...collection, description: e.target.value})}
                         style={{resize: "none"}}
+                        disabled={loadingSubmit}
                     />
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Категория:</Form.Label>
+                    <Form.Label>{t("category")}:</Form.Label>
                     <Form.Control
                         as="select"
                         name="category"
                         value={collection.category}
                         onChange={e => setCollection({...collection, category: e.target.value})}
+                        disabled={loadingSubmit}
                     >
-                        <option value="Books">Books</option>
-                        <option value="Signs">Signs</option>
-                        <option value="Silverware">Silverware</option>
-                        <option value="Music">Music</option>
-                        <option value="Movies">Movies</option>
-                        <option value="Series">Series</option>
-                        <option value="Recipes">Recipes</option>
-                        <option value="Coins">Coins</option>
-                        <option value="Other">Other</option>
+                        <option value="Books">{t("books")}</option>
+                        <option value="Music">{t("music")}</option>
+                        <option value="Movies">{t("movies")}</option>
+                        <option value="Series">{t("series")}</option>
+                        <option value="Silverware">{t("silverware")}</option>
+                        <option value="Recipes">{t("recipes")}</option>
+                        <option value="Coins">{t("coins")}</option>
+                        <option value="Signs">{t("signs")}</option>
+                        <option value="Other">{t("other")}</option>
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Изображение:</Form.Label>
+                    <Form.Label>{t("image")}:</Form.Label>
                     <Form.Control
                         type="file"
                         accept="image/*"
                         onChange={handleImageChange}
+                        disabled={loadingSubmit}
                     />
-                    {collection.image_url && <img src={collection.image_url} alt="Uploaded"/>}
+                    {collection.image_url && <img src={collection.image_url} alt={t("uploaded")}/>}
                 </Form.Group>
-                <h2 className='mt-4 mb-4'>Дополнительные поля</h2>
+                <h2 className='mt-4 mb-4'>{t("additional_fields")}</h2>
                 {collection.additionalFields.map((field, index) => (
                     <div key={index} className="d-flex justify-content-center align-items-end">
                         <div className="col-md-4">
                             <Form.Group style={{marginRight: '20px'}}>
-                                <Form.Label>Название поля:</Form.Label>
+                                <Form.Label>{t("field_name")}:</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="name"
                                     value={field.name}
                                     onChange={e => handleFieldChange(index, e)}
                                     style={{width: "100%"}}
+                                    disabled={loadingSubmit}
                                 />
                             </Form.Group>
                         </div>
                         <div className="col-md-4">
                             <Form.Group style={{marginRight: '20px'}}>
-                                <Form.Label>Тип:</Form.Label>
+                                <Form.Label>{t("type")}:</Form.Label>
                                 <Form.Control
                                     as="select"
                                     name="type"
                                     value={field.type}
                                     onChange={e => handleFieldChange(index, e)}
                                     style={{width: "100%"}}
+                                    disabled={loadingSubmit}
                                 >
-                                    <option value="string">Строка</option>
-                                    <option value="number">Число</option>
-                                    <option value="text">Многострочный текст</option>
-                                    <option value="boolean">Да/нет</option>
-                                    <option value="date">Дата</option>
+                                    <option value="string">{t("string")}</option>
+                                    <option value="number">{t("number")}</option>
+                                    <option value="text">{t("multiline_text")}</option>
+                                    <option value="boolean">{t("yes_no")}</option>
+                                    <option value="date">{t("date")}</option>
                                 </Form.Control>
                             </Form.Group>
                         </div>
                         <div className="col-md-4">
-                            <Button variant="danger" className='w-100' onClick={() => handleRemoveField(index)}>Удалить
-                                поле</Button>
+                            <Button variant="danger" className='w-100' onClick={() => handleRemoveField(index)}
+                                    disabled={loadingSubmit}>
+                                {t("delete_field")}
+                            </Button>
                         </div>
                     </div>
                 ))}
                 <div className='text-center mt-4'>
-                    <Button variant="warning" className='w-25' onClick={handleAddField}>Добавить поле</Button>
+                    <Button variant="warning" className='w-25' onClick={handleAddField} disabled={loadingSubmit}>
+                        {t("add_a_field")}
+                    </Button>
                 </div>
-                <div className='mt-4 mb-4'>
-                    <Button type="submit" className='w-100 btn-secondary'>Сохранить</Button>
+                <div className='mt-5 mb-4 text-center'>
+                    <Button type="submit" className='w-100 btn-secondary' disabled={loadingSubmit}>
+                        {loadingSubmit ? t("sending") : t("save")}
+                    </Button>
+
                 </div>
             </Form>
         </Container>

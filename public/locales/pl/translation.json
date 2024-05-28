@@ -69,7 +69,44 @@
   "logged_in": "zalogowany",
   "to_send_a_comment": "aby wysłać komentarz",
   "no_comments_yet": "Brak komentarzy",
-  "cancel": "Anulować"
+  "cancel": "Anulować",
+  "create_a_collection": "Utwórz kolekcję",
+  "edit_collection": "Edytuj kolekcję",
+  "name": "Nazwa",
+  "uploaded": "Załadowany",
+  "additional_fields": "Dodatkowe pola",
+  "field_name": "Nazwa pola",
+  "type": "Typ",
+  "string": "Ciąg",
+  "number": "Numer",
+  "multiline_text": "Tekst wielowierszowy",
+  "yes_no": "Tak / Nie",
+  "date": "Data",
+  "delete_field": "Usuń pole",
+  "add_a_field": "Dodaj pole",
+  "save": "Zapisz",
+  "books": "Książki",
+  "signs": "Oznaki",
+  "silverware": "Srebro stołowe",
+  "music": "Muzyka",
+  "movies": "Kino",
+  "series": "Seria",
+  "recipes": "Przepisy",
+  "coins": "Monety",
+  "other": "Inny",
+  "sending": "Wysyłanie...",
+  "create_item": "Utwórz element",
+  "edit_item": "Edytuj rzecz"
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from "../../context/AuthContext";
-import { Button, Form, Image, InputGroup } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useAuth} from "../../context/AuthContext";
+import {Alert, Button, Form, Image, InputGroup} from 'react-bootstrap';
 import api from "../utils/api";
 import Container from "react-bootstrap/Container";
-import './EditItem.css'; // Import the CSS file
+import './EditItem.css';
+import {useTranslation} from "react-i18next";
 
 const EditItem = () => {
-    const { id } = useParams();
+    const {t} = useTranslation();
+    const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const { user } = useAuth();
+    const {user} = useAuth();
     const userName = user ? user.username : '';
     const userId = user ? user.user_id : '';
-    const userID = user ? user.user_id : '';
-
-
     const collectionId = new URLSearchParams(location.search).get('collection');
-
+    const [collection, setCollection] = useState(null);
+    const [allTags, setAllTags] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [image, setImage] = useState(null);
     const [item, setItem] = useState({
         name: '',
         tags: '',
@@ -27,16 +29,13 @@ const EditItem = () => {
         user_id: userId,
         collection: collectionId,
     });
-
-    console.log(item)
-
-    const [collection, setCollection] = useState(null);
-    const [allTags, setAllTags] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
-    const [image, setImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 if (id !== 'new') {
                     const itemResponse = await api.get(`/items/${id}?populate=*`);
@@ -62,7 +61,10 @@ const EditItem = () => {
                 const tags = tagsResponse.data.map(tag => tag.attributes.tags);
                 setAllTags(tags);
             } catch (error) {
+                setError('Error fetching data');
                 console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -102,6 +104,7 @@ const EditItem = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         const inputTags = item.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
         const existingTags = [];
@@ -147,12 +150,15 @@ const EditItem = () => {
             await request;
             navigate(`/collection/${collectionId || item.collection.id}`);
         } catch (error) {
+            setError('Error saving item');
             console.error('Error saving item:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     const handleFieldChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const {name, value, type, checked} = e.target;
         const fieldValue = type === 'checkbox' ? checked : value;
         setItem({
             ...item,
@@ -184,14 +190,14 @@ const EditItem = () => {
                         name={key}
                         checked={item.additionalFields[key] || false}
                         onChange={handleFieldChange}
-                        label="Да"
+                        label={t("yes")}
                     />
                     <Form.Check
                         type="checkbox"
                         name={key}
                         checked={!item.additionalFields[key]}
                         onChange={handleFieldChange}
-                        label="Нет"
+                        label={t("no")}
                     />
                 </div>
             );
@@ -224,61 +230,67 @@ const EditItem = () => {
 
     return (
         <Container>
-            <Form onSubmit={handleSubmit}>
-                <div>
-                    <h1 className='mt-5 mb-5 text-center'>{id === 'new' ? 'Создать айтем' : 'Редактировать айтем'}</h1>
-                    <Form.Group controlId="itemName">
-                        <Form.Label>Название:</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="name"
-                            value={item.name}
-                            onChange={e => setItem({...item, name: e.target.value})}
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="itemTags">
-                        <Form.Label>Тэги:</Form.Label>
-                        <InputGroup>
+            {loading ? (
+                <div className="text-center mt-5">{t("loading")}...</div>
+            ) : (
+                <Form onSubmit={handleSubmit}>
+                    <div>
+                        <h1 className='mt-5 mb-5 text-center'>{id === 'new' ? t("create_item") : t("edit_item")}</h1>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        <Form.Group controlId="itemName">
+                            <Form.Label>{t("name")}:</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="tags"
-                                value={item.tags}
-                                onChange={handleTagInputChange}
-                                onBlur={() => setSuggestions([])}
+                                name="name"
+                                value={item.name}
+                                onChange={e => setItem({...item, name: e.target.value})}
                             />
-                            {suggestions.length > 0 && (
-                                <div className="suggestions">
-                                    {suggestions.map((suggestion, index) => (
-                                        <div key={index} className="suggestion-item" onMouseDown={() => handleTagClick(suggestion.tag)}>
-                                            {suggestion.tag}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </InputGroup>
-                    </Form.Group>
-                    <Form.Group controlId="itemImage">
-                        <Form.Label>Изображение:</Form.Label>
-                        <Form.Control
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                        />
-                        {item.image_url && <Image src={item.image_url} alt="Uploaded" thumbnail />}
-                    </Form.Group>
-                    {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
-                        <Form.Group key={key} controlId={`itemField_${key}`}>
-                            <Form.Label>{key}:</Form.Label>
-                            {renderField(key, collection.attributes.fields[key])}
                         </Form.Group>
-                    ))}
-                    <div className="text-center">
-                        <Button variant="primary" type="submit" className='mt-5 w-75'>
-                            Сохранить
-                        </Button>
+                        <Form.Group controlId="itemTags">
+                            <Form.Label>{t("tags")}:</Form.Label>
+                            <InputGroup>
+                                <Form.Control
+                                    type="text"
+                                    name="tags"
+                                    value={item.tags}
+                                    onChange={handleTagInputChange}
+                                    onBlur={() => setSuggestions([])}
+                                />
+                                {suggestions.length > 0 && (
+                                    <div className="suggestions">
+                                        {suggestions.map((suggestion, index) => (
+                                            <div key={index} className="suggestion-item"
+                                                 onMouseDown={() => handleTagClick(suggestion.tag)}>
+                                                {suggestion.tag}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </InputGroup>
+                        </Form.Group>
+                        <Form.Group controlId="itemImage">
+                            <Form.Label>{t("image")}:</Form.Label>
+                            <Form.Control
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                            {item.image_url && <Image src={item.image_url} alt={t("uploaded")} thumbnail/>}
+                        </Form.Group>
+                        {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
+                            <Form.Group key={key} controlId={`itemField_${key}`}>
+                                <Form.Label>{key}:</Form.Label>
+                                {renderField(key, collection.attributes.fields[key])}
+                            </Form.Group>
+                        ))}
+                        <div className="text-center">
+                            <Button variant="primary" type="submit" className='mt-5 w-75' disabled={isSubmitting}>
+                                {isSubmitting ? t("sending") : t("save")}
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </Form>
+                </Form>
+            )}
         </Container>
     );
 };
