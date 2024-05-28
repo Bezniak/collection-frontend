@@ -22,5 +22,54 @@
   "siteName": "Kolekcje",
   "english": "Angielski",
   "polish": "Polski",
-  "adminPanel": "Panel administratora"
+  "adminPanel": "Panel administratora",
+  "users": "Użytkownicy",
+  "block": "Blok",
+  "unblock": "Odblokować",
+  "admin": "Admin",
+  "authenticated": "Uwierzytelnione",
+  "not_admin": "Nie administratorze",
+  "delete": "Usuwać",
+  "id": "ID",
+  "registration_date": "Data rejestracji",
+  "last_update_date": "Data ostatniej aktualizacji",
+  "status": "Status",
+  "confirmed": "Potwierdzony",
+  "role": "Rola",
+  "collections_list": "Lista kolekcji",
+  "blocked": "Zablokowany",
+  "active": "Aktywny",
+  "yes": "Tak",
+  "no": "NIE",
+  "collection": "Kolekcja",
+  "add_a_new_item": "Dodaj nowy element",
+  "sort_by": "Sortuj według",
+  "created_by": "Stworzone przez",
+  "publication_date": "Data publikacji",
+  "last_modified_date": "Data ostatniej modyfikacji",
+  "direction": "Kierunek",
+  "ascending": "Rosnąco",
+  "descending": "Malejąco",
+  "image": "Obraz",
+  "tags": "Tagi",
+  "actions": "Działania",
+  "open": "Otwarty",
+  "edit": "Edytować"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

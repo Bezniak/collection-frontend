@@ -22,5 +22,56 @@
   "siteName": "Collections",
   "english": "English",
   "polish": "Polish",
-  "adminPanel": "Admin panel"
+  "adminPanel": "Admin panel",
+  "users": "Users",
+  "block": "Block",
+  "unblock": "Unblock",
+  "admin": "Admin",
+  "authenticated": "Authenticated",
+  "not_admin": "Not admin",
+  "delete": "Delete",
+  "id": "ID",
+  "registration_date": "Registration Date",
+  "last_update_date": "Last update Date",
+  "status": "Status",
+  "confirmed": "Confirmed",
+  "role": "Role",
+  "collections_list": "Collections list",
+  "blocked": "Blocked",
+  "active": "Active",
+  "yes": "Yes",
+  "no": "No",
+  "collection": "Collection",
+  "add_a_new_item": "Add a new item",
+  "sort_by": "Sort by",
+  "created_by": "Created by",
+  "publication_date": "Publication date",
+  "last_modified_date": "Last modified date",
+  "direction": "Direction",
+  "ascending": "Ascending",
+  "descending": "Descending",
+  "image": "Image",
+  "tags": "Tags",
+  "actions": "Actions",
+  "open": "Open",
+  "edit": "Edit"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

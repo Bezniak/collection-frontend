@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import axios from "axios";
-import useFetchAllData from "../utils/useFetchAllData";
 import Preloader from "../Preloader/Preloader";
 import {Alert, Table} from "react-bootstrap";
 import {FaLock, FaLockOpen, FaUserLock} from "react-icons/fa";
@@ -11,16 +10,15 @@ import {GrUserAdmin} from "react-icons/gr";
 import {useAuth} from "../../context/AuthContext";
 import {NavLink} from "react-router-dom";
 import Container from "react-bootstrap/Container";
+import {useTranslation} from "react-i18next";
+import useFetch from "../utils/useFetch";
 
 const AdminPanel = () => {
-    const {data, loading, error, refetch} = useFetchAllData(`/users?populate=*`);
+    const {data, loading, error, refetch} = useFetch(`/users?populate=*`);
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const {user, updateRole} = useAuth();  // Destructure updateRole from useAuth
+    const {user, updateRole} = useAuth();
     const jwt = Cookies.get('JWT');
-
-    console.log(data)
-
-    console.log('data', data)
+    const {t} = useTranslation();
 
     const handleAction = async (status) => {
         try {
@@ -35,7 +33,7 @@ const AdminPanel = () => {
             }));
             await refetch();
         } catch (error) {
-            console.error(`Error ${status === 'blocked' ? 'blocking' : 'unblocking'} user:`, error);
+            console.error(`Error changing blocked:`, error);
         }
     };
 
@@ -104,36 +102,36 @@ const AdminPanel = () => {
     }
 
     return (
-        <Container fluid="md" style={{width: '80%'}}>
-            <h1 className="text-center mb-4 fs-2">Users</h1>
+        <Container fluid="md" className='mt-5 mb-5'>
+            <h1 className="text-center mb-4 fs-2">{t("users")}</h1>
             <div className='mb-3 d-flex justify-content-start'>
                 <button className="btn btn-primary me-3 d-flex align-items-center justify-content-center"
                         onClick={() => handleAction(true)}>
                     <FaLock className="me-1"/>
-                    <span>Block</span>
+                    <span>{t("block")}</span>
                 </button>
                 <button className="btn btn-outline-primary me-3 d-flex align-items-center justify-content-center"
                         onClick={() => handleAction(false)}>
                     <FaLockOpen className="me-1"/>
-                    <span>Unblock</span>
+                    <span>{t("unblock")}</span>
                 </button>
                 <button className="btn btn-warning me-3 d-flex align-items-center justify-content-center"
                         onClick={() => handleAdmin(3)}> {/* Assuming role ID 4 is for Admin */}
                     <GrUserAdmin className="me-1"/>
-                    <span>Admin</span>
+                    <span>{t("admin")}</span>
                 </button>
                 <button className="btn btn-outline-warning me-3 d-flex align-items-center justify-content-center"
                         onClick={() => handleAdmin(1)}> {/* Assuming role ID 1 is for Authenticated */}
                     <FaUserLock className="me-1"/>
-                    <span>Not admin</span>
+                    <span>{t("not_admin")}</span>
                 </button>
                 <button className="btn btn-danger d-flex align-items-center justify-content-center"
                         onClick={handleDeleteUser}>
                     <RiDeleteBin6Line className="me-1"/>
-                    <span>Delete</span>
+                    <span>{t("delete")}</span>
                 </button>
             </div>
-            <Table striped bordered hover responsive="md" className="w-100">
+            <Table striped bordered hover responsive="md">
                 <thead className="bg-dark text-white">
                 <tr>
                     <th>
@@ -144,15 +142,15 @@ const AdminPanel = () => {
                             onChange={handleSelectAll}
                         />
                     </th>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Registration Date</th>
-                    <th>Last update Date</th>
-                    <th>Status</th>
-                    <th>Confirmed</th>
-                    <th>Role</th>
-                    <th>Collections list</th>
+                    <th>{t("id")}</th>
+                    <th>{t("username")}</th>
+                    <th>{t("email")}</th>
+                    <th>{t("registration_date")}</th>
+                    <th>{t("last_update_date")}</th>
+                    <th>{t("status")}</th>
+                    <th>{t("confirmed")}</th>
+                    <th>{t("role")}</th>
+                    <th>{t("collections_list")}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -171,21 +169,19 @@ const AdminPanel = () => {
                         <td>{user.email}</td>
                         <td>{formatDate(user.createdAt)}</td>
                         <td>{formatDate(user.updatedAt)}</td>
-                        <td>{user.blocked ? 'Blocked' : 'Active'}</td>
-                        <td>{user.confirmed ? 'Yes' : 'No'}</td>
-                        <td>{user?.role?.type}</td>
+                        <td>{user.blocked ? t("blocked") : t("active")}</td>
+                        <td>{user.confirmed ? t("yes") : t("no")}</td>
+                        <td>{user?.role?.type === "admin" ? t("admin") : t("authenticated")}</td>
                         <td className='d-flex flex-column'>
-                            {user?.collections.length
-                                ? (
-                                    user?.collections?.map((collection) => (
-                                        <NavLink
-                                            to={`/collections/${user.id}`}
-                                            key={collection.id}
-                                        >
-                                            {collection.name}
-                                        </NavLink>
-                                    )))
-                                : <p>0</p>
+                            {user?.collections.length && (
+                                user?.collections?.map((collection) => (
+                                    <NavLink
+                                        to={`/collections/${user.id}`}
+                                        key={collection.id}
+                                    >
+                                        {collection.name}
+                                    </NavLink>
+                                )))
                             }
                         </td>
                     </tr>

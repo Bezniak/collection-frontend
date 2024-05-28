@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import './style.css';
 import {Link, useParams} from 'react-router-dom';
 import {Alert, Button, Dropdown, DropdownButton, Image, Table} from 'react-bootstrap';
 import api from "../utils/api";
@@ -7,8 +8,10 @@ import {useAuth} from "../../context/AuthContext";
 import {MdOutlineImageNotSupported} from "react-icons/md";
 import Container from "react-bootstrap/Container";
 import Preloader from "../Preloader/Preloader";
+import {useTranslation} from "react-i18next";
 
 const Collection = ({collection: propCollection, items: propItems}) => {
+    const {t} = useTranslation();
     const {id} = useParams();
     const [collection, setCollection] = useState(propCollection || null);
     const [items, setItems] = useState(propItems || []);
@@ -43,9 +46,11 @@ const Collection = ({collection: propCollection, items: propItems}) => {
         if (!propCollection) {
             fetchCollection();
         }
+
         if (!propItems) {
             fetchItems();
         }
+
     }, [id, propCollection, propItems]);
 
     const handleDelete = async (itemId) => {
@@ -93,29 +98,32 @@ const Collection = ({collection: propCollection, items: propItems}) => {
     }
 
     return (
-        <Container fluid="md" style={{width: '90%'}}>
-            <h1 className='text-center mt-5'>Коллекция: {collection.attributes.name}</h1>
+        <Container fluid="md" className='mt-5 mb-5'>
+            <h1 className='text-center'>{t("collection")}: {collection.attributes.name}</h1>
             <p className='text-center'>{collection.attributes.description}</p>
-            {
-                (user?.user_id === collection.attributes?.user_id) &&
+            {user?.user_id === collection.attributes?.user_id &&
                 <div className='mt-4 mb-5 text-center'>
                     <Link to={`/edit-item/new?collection=${id}`} className="w-25 btn btn-warning me-2">
-                        Добавить новый айтем
+                        {t("add_a_new_item")}
                     </Link>
                 </div>
             }
-
             <div className="d-flex justify-content-end mb-4">
-                <DropdownButton id="dropdown-basic-button" title={`Sort by: ${sortField}`}>
-                    <Dropdown.Item onClick={() => handleSortFieldChange('id')}>ID</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSortFieldChange('name')}>Name</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSortFieldChange('user_name')}>Created by</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSortFieldChange('publishedAt')}>Publication date</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSortFieldChange('updatedAt')}>Last modified date</Dropdown.Item>
+                <DropdownButton id="dropdown-basic-button" title={`${t("sort_by")}: ${sortField}`}>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('id')}>{t("id")}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('name')}>{t("username")}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleSortFieldChange('user_name')}>{t("created_by")}</Dropdown.Item>
+                    <Dropdown.Item
+                        onClick={() => handleSortFieldChange('publishedAt')}>{t("publication_date")}</Dropdown.Item>
+                    <Dropdown.Item
+                        onClick={() => handleSortFieldChange('updatedAt')}>{t("last_modified_date")}</Dropdown.Item>
                 </DropdownButton>
-                <DropdownButton id="dropdown-basic-button" title={`Direction: ${sortDirection}`} className="ms-2">
-                    <Dropdown.Item onClick={() => handleSortDirectionChange('ascending')}>Ascending</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleSortDirectionChange('descending')}>Descending</Dropdown.Item>
+                <DropdownButton id="dropdown-basic-button" title={`${t("direction")}: ${sortDirection}`}
+                                className="ms-2">
+                    <Dropdown.Item
+                        onClick={() => handleSortDirectionChange('ascending')}>{t("ascending")}</Dropdown.Item>
+                    <Dropdown.Item
+                        onClick={() => handleSortDirectionChange('descending')}>{t("descending")}</Dropdown.Item>
                 </DropdownButton>
             </div>
 
@@ -123,33 +131,33 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                 <Table striped bordered hover>
                     <thead>
                     <tr className='text-center'>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Created by</th>
-                        <th>Publication date</th>
-                        <th>Last modified date</th>
-                        <th>Tags</th>
+                        <th>{t("id")}</th>
+                        <th>{t("image")}</th>
+                        <th>{t("username")}</th>
+                        <th>{t("created_by")}</th>
+                        <th>{t("publication_date")}</th>
+                        <th>{t("last_modified_date")}</th>
+                        <th>{t("tags")}</th>
                         {collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
                             collection.attributes.fields[key] !== 'text' && <th key={key}>{key}</th>
                         ))}
-                        <th>Actions</th>
+                        <th>{t("actions")}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {sortedItems.map(item => (
                         <tr key={item.id}>
                             <td>{item.id}</td>
-                            <td>
+                            <td style={{textAlign: "center", verticalAlign: "middle"}}>
                                 {item.attributes?.image_url?.data ? (
                                     <Image
                                         src={process.env.REACT_APP_UPLOAD_URL + item.attributes?.image_url?.data?.attributes?.url}
                                         alt={collection.attributes?.image_url?.data?.attributes?.name}
-                                        style={{width: '80px'}}
+                                        className="custom-image"
                                         rounded
                                     />
                                 ) : (
-                                    <MdOutlineImageNotSupported/>
+                                    <MdOutlineImageNotSupported style={{fontSize: "50px"}}/>
                                 )}
                             </td>
                             <td>{item.attributes.name}</td>
@@ -161,7 +169,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                                 collection.attributes.fields[key] !== 'text' && (
                                     <td key={key}>
                                         {collection.attributes.fields[key] === 'boolean' ?
-                                            (item.attributes.additionalFields[key] ? 'Да' : 'Нет') :
+                                            (item.attributes.additionalFields[key] ? t("yes") : t("no")) :
                                             item.attributes.additionalFields[key]
                                         }
                                     </td>
@@ -169,13 +177,13 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                             ))}
                             <td>
                                 <Link to={`/item/${item.id}`}
-                                      className="w-100 mb-2 btn btn-info btn-sm me-2">Открыть</Link>
+                                      className="w-100 mb-2 btn btn-info btn-sm me-2">{t("open")}</Link>
                                 {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
                                     <>
                                         <Link to={`/edit-item/${item.id}?collection=${id}`}
-                                              className="w-100 mb-2 btn btn-warning btn-sm me-2">Редактировать</Link>
+                                              className="w-100 mb-2 btn btn-warning btn-sm me-2">{t("edit")}</Link>
                                         <Button variant="danger" size="sm" className='w-100'
-                                                onClick={() => handleDelete(item.id)}>Удалить</Button>
+                                                onClick={() => handleDelete(item.id)}>{t("delete")}</Button>
                                     </>
                                 )}
                             </td>
