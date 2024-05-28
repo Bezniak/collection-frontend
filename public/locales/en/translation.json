@@ -61,7 +61,15 @@
   "collection_name": "Collection name",
   "description": "Description",
   "category": "Category",
-  "items_count": "Items count"
+  "items_count": "Items count",
+  "comment_rule": "You must be logged in to send a comment",
+  "comment_label": "Leave a comment here",
+  "send": "Send",
+  "you_must_be": "You must be",
+  "logged_in": "logged in",
+  "to_send_a_comment": "to send a comment",
+  "no_comments_yet": "No comments yet",
+  "cancel": "Cancel"
 
 
 

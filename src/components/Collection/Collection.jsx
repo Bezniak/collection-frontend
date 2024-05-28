@@ -175,15 +175,15 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                                 )
                             ))}
                             <td>
-                                <div className='d-flex justify-content-center align-items-center'>
+                                <div className='d-flex justify-content-center align-items-start'>
 
                                     <Link to={`/item/${item.id}`}
-                                          className="w-100 mb-2 btn btn-info btn-sm me-2">{t("open")}</Link>
+                                          className="btn btn-info btn-sm me-3 p-2">{t("open")}</Link>
                                     {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
                                         <>
                                             <Link to={`/edit-item/${item.id}?collection=${id}`}
-                                                  className="w-100 mb-2 btn btn-warning btn-sm me-2">{t("edit")}</Link>
-                                            <Button variant="danger" size="sm" className='w-100'
+                                                  className="btn btn-warning btn-sm me-3 p-2">{t("edit")}</Link>
+                                            <Button variant="danger" size="sm" className='p-2'
                                                     onClick={() => handleDelete(item.id)}>{t("delete")}</Button>
                                         </>
                                     )}

@@ -99,24 +99,24 @@ const Collections = ({collections: propCollections}) => {
                                     <MdOutlineImageNotSupported style={{fontSize: "30px"}}/>
                                 )}
                             </td>
-                            <td className="text-center align-middle">{collection.attributes?.name}</td>
-                            <td className="text-center align-middle">{collection.attributes?.description}</td>
-                            <td className="text-center align-middle">{collection.attributes?.category}</td>
-                            <td className="text-center align-middle">{collection.attributes?.items?.data?.length}</td>
-                            <td className="text-center align-middle">{formatDate(collection.attributes?.publishedAt)}</td>
-                            <td className="text-center align-middle">{formatDate(collection.attributes?.updatedAt)}</td>
-                            <td className="text-center align-middle">
-                                <div className='d-flex justify-content-center'>
-                                    <Link to={`/collection/${collection.id}`} className="btn btn-info btn-sm me-2">
+                            <td>{collection.attributes?.name}</td>
+                            <td>{collection.attributes?.description}</td>
+                            <td>{collection.attributes?.category}</td>
+                            <td>{collection.attributes?.items?.data?.length}</td>
+                            <td>{formatDate(collection.attributes?.publishedAt)}</td>
+                            <td>{formatDate(collection.attributes?.updatedAt)}</td>
+                            <td>
+                                <div className='d-flex justify-content-center align-items-start'>
+                                    <Link to={`/collection/${collection.id}`} className="btn btn-info btn-sm me-3 p-2">
                                         {t("open")}
                                     </Link>
                                     {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
                                         <>
                                             <Link to={`/edit-collection/${collection.id}`}
-                                                  className="btn btn-warning btn-sm me-2">
+                                                  className="btn btn-warning btn-sm me-3 p-2">
                                                 {t("edit")}
                                             </Link>
-                                            <Button variant="danger" size="sm"
+                                            <Button variant="danger" size="sm" className='p-2'
                                                     onClick={() => handleDelete(collection.id)}>
                                                 {t("delete")}
                                             </Button>

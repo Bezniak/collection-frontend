@@ -1,19 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import {Button, Card, Col, Container, Form, Row} from 'react-bootstrap';
+import {Alert, Button, Card, Col, Container, Form, Row} from 'react-bootstrap';
 import {useAuth} from '../../context/AuthContext';
 import {toast} from 'react-toastify';
 import api from '../utils/api';
 import {formatDate} from '../utils/formatDate';
 import Preloader from '../Preloader/Preloader';
 import {NavLink} from 'react-router-dom';
+import {useTranslation} from "react-i18next";
 
 const Comment = ({itemId}) => {
+    const {t} = useTranslation();
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [editingCommentId, setEditingCommentId] = useState(null); // Добавляем состояние для хранения id комментария, который редактируется
+    const [editingCommentId, setEditingCommentId] = useState(null);
     const {user, role} = useAuth();
 
     const getAllComments = async () => {
@@ -34,7 +36,7 @@ const Comment = ({itemId}) => {
 
     const onSubmit = async () => {
         if (!user) {
-            toast.error('You must be logged in to send a comment');
+            toast.error(`${t("comment_rule")}`);
             return;
         }
 
@@ -61,19 +63,15 @@ const Comment = ({itemId}) => {
                     publishedAt: new Date().toISOString(),
                 },
             };
-
-            // Обновляем состояние comments
             setComments([...comments, newComment]);
             setComment('');
-
-            // Запрашиваем обновленный список комментариев с сервера
+            // Requesting an updated list of comments from the server
             getAllComments();
         } catch (error) {
             console.error('Error adding comment:', error.response ? error.response.data : error.message);
             console.log(error);
         }
     };
-
 
     const onDelete = async (commentId) => {
         try {
@@ -106,7 +104,13 @@ const Comment = ({itemId}) => {
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return (
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
+        );
     }
 
     return (
@@ -115,10 +119,10 @@ const Comment = ({itemId}) => {
                 <>
                     <Row className="mt-4">
                         <Col>
-                            <FloatingLabel controlId="floatingTextarea2" label="Leave a comment here">
+                            <FloatingLabel controlId="floatingTextarea2" label={`${t("comment_label")}`}>
                                 <Form.Control
                                     as="textarea"
-                                    placeholder="Leave a comment here"
+                                    placeholder={`${t("comment_label")}`}
                                     style={{height: '150px', resize: 'none'}}
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
@@ -129,7 +133,7 @@ const Comment = ({itemId}) => {
                     <Row className="mt-2">
                         <Col>
                             <Button variant="success" className="w-100" onClick={onSubmit}>
-                                Отправить
+                                {t("send")}
                             </Button>
                         </Col>
                     </Row>
@@ -139,7 +143,8 @@ const Comment = ({itemId}) => {
                     <Row className="justify-content-end">
                         <Col>
                             <h5 className="text-end">
-                                You must be <NavLink className="" to="/login">logged in</NavLink> to send a comment
+                                `${t("you_must_be")}`
+                                <NavLink to="/login">`${t("logged_in")}`</NavLink> `${t("to_send_a_comment")}`
                             </h5>
                         </Col>
                     </Row>
@@ -147,7 +152,7 @@ const Comment = ({itemId}) => {
             )}
             <Row className="mt-4">
                 <Col>
-                    {!loading && !error && comments.length === 0 && <p>No comments yet.</p>}
+                    {!loading && !error && comments.length === 0 && <p>{t("no_comments_yet")}</p>}
                     {!loading &&
                         !error &&
                         comments.map((comment) => (
@@ -190,7 +195,7 @@ const Comment = ({itemId}) => {
                                                 className="mt-2 ms-2"
                                                 onClick={() => setEditingCommentId(null)}
                                             >
-                                                Cancel
+                                                {t("cancel")}
                                             </Button>
                                         </>
                                     ) : (
@@ -203,10 +208,10 @@ const Comment = ({itemId}) => {
                                                         className="me-2"
                                                         onClick={() => setEditingCommentId(comment.id)}
                                                     >
-                                                        Edit
+                                                        {t("edit")}
                                                     </Button>
                                                     <Button variant="danger" onClick={() => onDelete(comment.id)}>
-                                                        Delete
+                                                        {t("delete")}
                                                     </Button>
                                                 </>
                                             )}

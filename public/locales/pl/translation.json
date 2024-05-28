@@ -61,7 +61,21 @@
   "collection_name": "Nazwa kolekcji",
   "description": "Opis",
   "category": "Kategoria",
-  "items_count": "Liczba przedmiotów"
+  "items_count": "Liczba przedmiotów",
+  "comment_rule": "Aby wysłać komentarz, musisz być zalogowany",
+  "comment_label": "Zostaw komentarz tutaj",
+  "send": "Wysłać",
+  "you_must_be": "Musisz być",
+  "logged_in": "zalogowany",
+  "to_send_a_comment": "aby wysłać komentarz",
+  "no_comments_yet": "Brak komentarzy",
+  "cancel": "Anulować"
+
+
+
+
+
+
 
 
 
