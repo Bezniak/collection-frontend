@@ -54,7 +54,14 @@
   "tags": "Tags",
   "actions": "Actions",
   "open": "Open",
-  "edit": "Edit"
+  "edit": "Edit",
+  "my_collections": "My collections",
+  "create_collection": "Create a new collection",
+  "no_collections": "You have no collections",
+  "collection_name": "Collection name",
+  "description": "Description",
+  "category": "Category",
+  "items_count": "Items count"
 
 
 

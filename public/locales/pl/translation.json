@@ -54,7 +54,21 @@
   "tags": "Tagi",
   "actions": "Działania",
   "open": "Otwarty",
-  "edit": "Edytować"
+  "edit": "Edytować",
+  "my_collections": "Moje zbiory",
+  "create_collection": "Utwórz nową kolekcję",
+  "no_collections": "Nie masz żadnych kolekcji",
+  "collection_name": "Nazwa kolekcji",
+  "description": "Opis",
+  "category": "Kategoria",
+  "items_count": "Liczba przedmiotów"
+
+
+
+
+
+
+
 
 
 

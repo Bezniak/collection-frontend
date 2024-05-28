@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './style.css';
 import {Link, useParams} from 'react-router-dom';
 import {Alert, Button, Dropdown, DropdownButton, Image, Table} from 'react-bootstrap';
 import api from "../utils/api";
@@ -157,7 +156,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                                         rounded
                                     />
                                 ) : (
-                                    <MdOutlineImageNotSupported style={{fontSize: "50px"}}/>
+                                    <MdOutlineImageNotSupported style={{fontSize: "30px"}}/>
                                 )}
                             </td>
                             <td>{item.attributes.name}</td>
@@ -176,16 +175,19 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                                 )
                             ))}
                             <td>
-                                <Link to={`/item/${item.id}`}
-                                      className="w-100 mb-2 btn btn-info btn-sm me-2">{t("open")}</Link>
-                                {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
-                                    <>
-                                        <Link to={`/edit-item/${item.id}?collection=${id}`}
-                                              className="w-100 mb-2 btn btn-warning btn-sm me-2">{t("edit")}</Link>
-                                        <Button variant="danger" size="sm" className='w-100'
-                                                onClick={() => handleDelete(item.id)}>{t("delete")}</Button>
-                                    </>
-                                )}
+                                <div className='d-flex justify-content-center align-items-center'>
+
+                                    <Link to={`/item/${item.id}`}
+                                          className="w-100 mb-2 btn btn-info btn-sm me-2">{t("open")}</Link>
+                                    {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (
+                                        <>
+                                            <Link to={`/edit-item/${item.id}?collection=${id}`}
+                                                  className="w-100 mb-2 btn btn-warning btn-sm me-2">{t("edit")}</Link>
+                                            <Button variant="danger" size="sm" className='w-100'
+                                                    onClick={() => handleDelete(item.id)}>{t("delete")}</Button>
+                                        </>
+                                    )}
+                                </div>
                             </td>
 
                         </tr>
