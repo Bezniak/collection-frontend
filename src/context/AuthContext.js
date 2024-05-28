@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
             Cookies.set('JWT', userData.jwt, { expires: 30 });
             // Fetch full user data with role
             const res = await api.get(`/users/me?populate=*`);
-            if (res.role && res.role.type) {
+            if (res?.role?.type) {
                 setRole(res.role.type);
                 userData.user.role = res.role; // Ensure role is included in userData
             }

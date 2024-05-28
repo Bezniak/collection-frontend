@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -12,15 +12,14 @@ import useLanguage from '../../hooks/useLanguage';
 import { useAuth } from "../../context/AuthContext";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { DropdownButton } from "react-bootstrap";
-import axios from 'axios';
+import api from "../utils/api";
 
 const NavbarComponent = () => {
     const { t } = useTranslation();
     const { currentLanguage, changeLanguage } = useLanguage();
     const { user, logout, role } = useAuth();
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
+    const [query, setQuery] = useState('');
 
     const handleLogout = () => {
         logout();
@@ -30,20 +29,22 @@ const NavbarComponent = () => {
         navigate(path);
     };
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleSearch = async (e) => {
-        e.preventDefault();
+    const handleSearch = async (event) => {
+        event.preventDefault();
         try {
-            const { data } = await axios.get(`${process.env.REACT_APP_STRAPI_URL}/search`, {
-                params: { query: searchQuery }
+            const response = await api.get(process.env.REACT_APP_API_URL + '/search', {
+                params: { query }
             });
-            setSearchResults(data);
-            navigate('/search', { state: { results: data } });
+            // Only show items and collections
+            const { items, collections } = response;
+            const results = [...items, ...collections.map(collection => ({
+                ...collection,
+                isCollection: true
+            }))];
+            navigate('/search', { state: { results } });
+            setQuery('')
         } catch (error) {
-            console.error('Search error', error);
+            console.error(error);
         }
     };
 
@@ -92,7 +93,8 @@ const NavbarComponent = () => {
                             {role === 'admin' && (
                                 <>
                                     <Dropdown.Divider />
-                                    <Dropdown.Item onClick={() => handleNavigate('/adminPanel')}>Admin Panel</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleNavigate('/adminPanel')}>Admin
+                                        Panel</Dropdown.Item>
                                 </>
                             )}
                         </DropdownButton>
@@ -104,8 +106,8 @@ const NavbarComponent = () => {
                             placeholder={t("search")}
                             className="me-2"
                             aria-label="Search"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
                         />
                         <Button variant="outline-success" type="submit">{t("search")}</Button>
                     </Form>

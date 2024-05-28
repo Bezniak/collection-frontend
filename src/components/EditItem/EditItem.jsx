@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
-import {useAuth} from "../../context/AuthContext";
-import {Button, Form, Image, InputGroup} from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
+import { Button, Form, Image, InputGroup } from 'react-bootstrap';
 import api from "../utils/api";
 import Container from "react-bootstrap/Container";
+import './EditItem.css'; // Import the CSS file
 
 const EditItem = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const {user} = useAuth();
+    const { user } = useAuth();
     const userName = user ? user.username : '';
     const userId = user ? user.user_id : '';
     const userID = user ? user.user_id : '';
@@ -26,7 +27,6 @@ const EditItem = () => {
         user_id: userId,
         collection: collectionId,
     });
-
 
     console.log(item)
 
@@ -82,7 +82,7 @@ const EditItem = () => {
         const currentTag = inputTags[inputTags.length - 1].toLowerCase();
 
         const filteredSuggestions = allTags
-            .filter(tag => !inputTags.includes(tag) && tag.toLowerCase().startsWith(currentTag))
+            .filter(tag => !inputTags.includes(tag) && tag?.toLowerCase().startsWith(currentTag))
             .map(tag => ({tag, selected: false}));
 
         setSuggestions(filteredSuggestions);
@@ -152,7 +152,7 @@ const EditItem = () => {
     };
 
     const handleFieldChange = (e) => {
-        const {name, value, type, checked} = e.target;
+        const { name, value, type, checked } = e.target;
         const fieldValue = type === 'checkbox' ? checked : value;
         setItem({
             ...item,
@@ -249,7 +249,7 @@ const EditItem = () => {
                             {suggestions.length > 0 && (
                                 <div className="suggestions">
                                     {suggestions.map((suggestion, index) => (
-                                        <div key={index} onMouseDown={() => handleTagClick(suggestion.tag)}>
+                                        <div key={index} className="suggestion-item" onMouseDown={() => handleTagClick(suggestion.tag)}>
                                             {suggestion.tag}
                                         </div>
                                     ))}
@@ -264,7 +264,7 @@ const EditItem = () => {
                             accept="image/*"
                             onChange={handleImageChange}
                         />
-                        {item.image_url && <Image src={item.image_url} alt="Uploaded" thumbnail/>}
+                        {item.image_url && <Image src={item.image_url} alt="Uploaded" thumbnail />}
                     </Form.Group>
                     {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
                         <Form.Group key={key} controlId={`itemField_${key}`}>
