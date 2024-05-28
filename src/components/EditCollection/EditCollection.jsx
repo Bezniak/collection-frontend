@@ -152,7 +152,7 @@ const EditCollection = () => {
     }
 
     return (
-        <Container>
+        <Container className='mt-5 mb-5'>
             <h1 className='mt-5 mb-4 text-center'>{id === 'new' ? t("create_a_collection") : t("edit_collection")}</h1>
             <Form onSubmit={handleSubmit}>
                 <Form.Group>
@@ -254,8 +254,8 @@ const EditCollection = () => {
                         {t("add_a_field")}
                     </Button>
                 </div>
-                <div className='mt-5 mb-4 text-center'>
-                    <Button type="submit" className='w-100 btn-secondary' disabled={loadingSubmit}>
+                <div className='text-center'>
+                    <Button variant="primary" type="submit" className='mt-5 w-75' disabled={loadingSubmit}>
                         {loadingSubmit ? t("sending") : t("save")}
                     </Button>
 

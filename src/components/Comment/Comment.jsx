@@ -143,8 +143,8 @@ const Comment = ({itemId}) => {
                     <Row className="justify-content-end">
                         <Col>
                             <h5 className="text-end">
-                                `${t("you_must_be")}`
-                                <NavLink to="/login">`${t("logged_in")}`</NavLink> `${t("to_send_a_comment")}`
+                                {t("you_must_be")}&nbsp;
+                                <NavLink to="/login">{t("logged_in")}</NavLink>&nbsp;{t("to_send_a_comment")}
                             </h5>
                         </Col>
                     </Row>

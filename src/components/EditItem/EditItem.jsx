@@ -6,6 +6,7 @@ import api from "../utils/api";
 import Container from "react-bootstrap/Container";
 import './EditItem.css';
 import {useTranslation} from "react-i18next";
+import Preloader from "../Preloader/Preloader";
 
 const EditItem = () => {
     const {t} = useTranslation();
@@ -228,69 +229,80 @@ const EditItem = () => {
         }
     };
 
+    if (loading) {
+        return <Preloader/>
+    }
+
+    if (error) {
+        return (
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
+        );
+    }
+
+
     return (
-        <Container>
-            {loading ? (
-                <div className="text-center mt-5">{t("loading")}...</div>
-            ) : (
-                <Form onSubmit={handleSubmit}>
-                    <div>
-                        <h1 className='mt-5 mb-5 text-center'>{id === 'new' ? t("create_item") : t("edit_item")}</h1>
-                        {error && <Alert variant="danger">{error}</Alert>}
-                        <Form.Group controlId="itemName">
-                            <Form.Label>{t("name")}:</Form.Label>
+        <Container className='mt-5 mb-5'>
+            <Form onSubmit={handleSubmit}>
+                <div>
+                    <h1 className='mt-5 mb-5 text-center'>{id === 'new' ? t("create_item") : t("edit_item")}</h1>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <Form.Group controlId="itemName">
+                        <Form.Label>{t("name")}:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="name"
+                            value={item.name}
+                            onChange={e => setItem({...item, name: e.target.value})}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="itemTags">
+                        <Form.Label>{t("tags")}:</Form.Label>
+                        <InputGroup>
                             <Form.Control
                                 type="text"
-                                name="name"
-                                value={item.name}
-                                onChange={e => setItem({...item, name: e.target.value})}
+                                name="tags"
+                                value={item.tags}
+                                onChange={handleTagInputChange}
+                                onBlur={() => setSuggestions([])}
                             />
+                            {suggestions.length > 0 && (
+                                <div className="suggestions">
+                                    {suggestions.map((suggestion, index) => (
+                                        <div key={index} className="suggestion-item"
+                                             onMouseDown={() => handleTagClick(suggestion.tag)}>
+                                            {suggestion.tag}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </InputGroup>
+                    </Form.Group>
+                    <Form.Group controlId="itemImage">
+                        <Form.Label>{t("image")}:</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                        />
+                        {item.image_url && <Image src={item.image_url} alt={t("uploaded")} thumbnail/>}
+                    </Form.Group>
+                    {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
+                        <Form.Group key={key} controlId={`itemField_${key}`}>
+                            <Form.Label>{key}:</Form.Label>
+                            {renderField(key, collection.attributes.fields[key])}
                         </Form.Group>
-                        <Form.Group controlId="itemTags">
-                            <Form.Label>{t("tags")}:</Form.Label>
-                            <InputGroup>
-                                <Form.Control
-                                    type="text"
-                                    name="tags"
-                                    value={item.tags}
-                                    onChange={handleTagInputChange}
-                                    onBlur={() => setSuggestions([])}
-                                />
-                                {suggestions.length > 0 && (
-                                    <div className="suggestions">
-                                        {suggestions.map((suggestion, index) => (
-                                            <div key={index} className="suggestion-item"
-                                                 onMouseDown={() => handleTagClick(suggestion.tag)}>
-                                                {suggestion.tag}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </InputGroup>
-                        </Form.Group>
-                        <Form.Group controlId="itemImage">
-                            <Form.Label>{t("image")}:</Form.Label>
-                            <Form.Control
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                            />
-                            {item.image_url && <Image src={item.image_url} alt={t("uploaded")} thumbnail/>}
-                        </Form.Group>
-                        {collection && collection.attributes.fields && Object.keys(collection.attributes.fields).map(key => (
-                            <Form.Group key={key} controlId={`itemField_${key}`}>
-                                <Form.Label>{key}:</Form.Label>
-                                {renderField(key, collection.attributes.fields[key])}
-                            </Form.Group>
-                        ))}
-                        <div className="text-center">
-                            <Button variant="primary" type="submit" className='mt-5 w-75' disabled={isSubmitting}>
-                                {isSubmitting ? t("sending") : t("save")}
-                            </Button>
-                        </div>
+                    ))}
+                    <div className="text-center">
+                        <Button variant="primary" type="submit" className='mt-5 w-75' disabled={isSubmitting}>
+                            {isSubmitting ? t("sending") : t("save")}
+                        </Button>
                     </div>
-                </Form>
-            )}
+                </div>
+            </Form>
         </Container>
     );
 };

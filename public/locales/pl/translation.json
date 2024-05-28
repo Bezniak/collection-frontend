@@ -96,7 +96,10 @@
   "other": "Inny",
   "sending": "Wysyłanie...",
   "create_item": "Utwórz element",
-  "edit_item": "Edytuj rzecz"
+  "edit_item": "Edytuj rzecz",
+  "no_item_data_found": "Nie znaleziono danych elementu",
+  "like_rule": "Aby polubić przedmiot, musisz się zalogować"
+
 
 
 

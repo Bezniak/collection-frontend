@@ -96,7 +96,9 @@
   "other": "Other",
   "sending": "Sending...",
   "create_item": "Create item",
-  "edit_item": "Edit item"
+  "edit_item": "Edit item",
+  "no_item_data_found": "No item data found",
+  "like_rule": "You must be logged in to like item"
 
 
 

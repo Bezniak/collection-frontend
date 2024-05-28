@@ -176,7 +176,6 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                             ))}
                             <td>
                                 <div className='d-flex justify-content-center align-items-start'>
-
                                     <Link to={`/item/${item.id}`}
                                           className="btn btn-info btn-sm me-3 p-2">{t("open")}</Link>
                                     {(user?.id === collection.attributes?.user?.data?.id || role === 'admin') && (

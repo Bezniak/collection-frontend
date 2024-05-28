@@ -5,9 +5,13 @@ import {formatDate} from '../utils/formatDate';
 import LikeHandler from "../LikeHandler/LikeHandler";
 import './ItemDetails.css';
 import Comment from "../Comment/Comment";
-import Preloader from "../Preloader/Preloader"; // Create a separate CSS file for custom styles
+import Preloader from "../Preloader/Preloader";
+import {useTranslation} from "react-i18next";
+import {Alert} from "react-bootstrap";
+import {HiOutlinePhoto} from "react-icons/hi2";
 
 const ItemDetails = () => {
+    const {t} = useTranslation();
     const {id} = useParams();
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -33,35 +37,46 @@ const ItemDetails = () => {
     }
 
     if (error) {
-        return <div className="alert alert-danger text-center mt-5">Error: {error.message}</div>;
+        return (
+            <div>
+                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+                    Error: {error.message}
+                </Alert>
+            </div>
+        );
     }
 
     if (!item) {
-        return <div className="alert alert-warning text-center mt-5">No item data found.</div>;
+        return <div className="alert alert-warning text-center mt-5">{t("no_item_data_found")}</div>;
     }
 
     const formatFieldValue = (value) => {
         if (typeof value === 'string' && !isNaN(Date.parse(value))) {
             return formatDate(value);
         }
-        return value === true ? 'Да' : value === false ? 'Нет' : value;
+        return value === true ? t("yes") : value === false ? t("no") : value;
     };
 
     return (
         <div className="container mt-5 mb-5">
             <div className="row mb-5 align-items-center position-relative bg-light p-4 rounded shadow">
                 <div className="col-md-4 text-center">
-                    <img
-                        src={process.env.REACT_APP_UPLOAD_URL + item?.attributes?.image_url?.data?.attributes?.url}
-                        alt={item?.attributes?.image_url?.data?.attributes?.name}
-                        className="img-fluid rounded shadow-sm"
-                        style={{maxWidth: '100%', height: 'auto'}}
-                    />
+                    {item?.attributes?.image_url?.data?.attributes?.url ? (
+                        <img
+                            src={process.env.REACT_APP_UPLOAD_URL + item?.attributes?.image_url?.data?.attributes?.url}
+                            alt={item?.attributes?.image_url?.data?.attributes?.name}
+                            className="img-fluid rounded shadow-sm"
+                            style={{maxWidth: '100%', height: 'auto'}}
+                        />
+                    ) : (
+                        <HiOutlinePhoto style={{width: '50%', height: 'auto', color: "lightgray"}}/>
+                    )}
                 </div>
+
                 <div className="col-md-8 d-flex flex-column justify-content-start">
                     <div className="text-start text-md-left">
                         <h1 className="mt-3 text-capitalize">{item.attributes.name}</h1>
-                        <p className="text-muted">Тэги: {item.attributes.tags}</p>
+                        <p className="text-muted">{t("tags")}: {item.attributes.tags}</p>
                         {item.attributes.additionalFields && Object.keys(item.attributes.additionalFields).map(key => (
                             <p key={key} className="mb-2">
                                 <strong>{key}:</strong> {formatFieldValue(item.attributes.additionalFields[key])}

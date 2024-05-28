@@ -4,8 +4,10 @@ import {toast} from 'react-toastify';
 import api from "../utils/api";
 import {useAuth} from "../../context/AuthContext";
 import './LikeHandler.css';
+import {useTranslation} from "react-i18next";
 
 const LikeHandler = ({itemId}) => {
+    const {t} = useTranslation();
     const [liked, setLiked] = useState(false);
     const [likeId, setLikeId] = useState(null);
     const {user} = useAuth();
@@ -33,7 +35,7 @@ const LikeHandler = ({itemId}) => {
 
     const handleLike = async () => {
         if (!user) {
-            toast.info('You must be logged in to like item');
+            toast.info(`${t("like_rule")}`);
             return;
         }
 
