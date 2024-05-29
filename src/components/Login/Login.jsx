@@ -73,7 +73,7 @@ const Login = () => {
 
                 <div className={`text-center mt-5`}>
                     <Button type="submit" variant={`${theme === 'light' ? 'outline-dark' : 'outline-light'}`}
-                            className="w-auto mb-4"
+                            className="w-50 mb-4"
                             disabled={isLoading}
                     >
                         {isLoading ? t("sending") : t("login")}

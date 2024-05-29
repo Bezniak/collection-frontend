@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import Preloader from '../Preloader/Preloader';
-import api from "../utils/api";
-import {useAuth} from "../../context/AuthContext";
-import {MdOutlineImageNotSupported} from "react-icons/md";
-import {formatDate} from "../utils/formatDate";
+import api from '../utils/api';
+import {useAuth} from '../../context/AuthContext';
+import {MdOutlineImageNotSupported} from 'react-icons/md';
+import {formatDate} from '../utils/formatDate';
 import {Alert, Button, Container, Image, Table} from 'react-bootstrap';
-import {useTranslation} from "react-i18next";
-
+import {useTranslation} from 'react-i18next';
+import Papa from 'papaparse';
 
 const Collections = ({collections: propCollections}) => {
     const {t} = useTranslation();
@@ -23,10 +23,14 @@ const Collections = ({collections: propCollections}) => {
                 let collectionsResponse;
                 if (userId) {
                     collectionsResponse = await api.get(`/collections?filters[user][id][$eq]=${userId}&populate=*`);
-                } else {
+                } else if (user && user.id) {
                     collectionsResponse = await api.get(`/collections?filters[user][id][$eq]=${user.id}&populate=*`);
                 }
-                setCollections(collectionsResponse.data || []);
+                if (collectionsResponse && collectionsResponse.data) {
+                    setCollections(collectionsResponse.data);
+                } else {
+                    setCollections([]);
+                }
                 setLoading(false);
             } catch (error) {
                 setError(error);
@@ -37,6 +41,7 @@ const Collections = ({collections: propCollections}) => {
         fetchCollections();
     }, [userId, user]);
 
+
     const handleDelete = async (id) => {
         try {
             await api.delete(`/collections/${id}`);
@@ -44,6 +49,40 @@ const Collections = ({collections: propCollections}) => {
         } catch (error) {
             setError(error);
         }
+    };
+
+    const handleExportToCSV = () => {
+        const csvData = collections.map(collection => {
+            const {attributes} = collection;
+            const items = attributes.items?.data.map(item => item.attributes) || [];
+            const additionalFields = items.map(item => item.additionalFields).flat();
+
+            return {
+                ID: collection.id,
+                Name: attributes?.name,
+                Description: attributes?.description,
+                Category: attributes?.category,
+                ItemsCount: attributes?.items?.data?.length,
+                PublishedAt: formatDate(attributes?.publishedAt),
+                UpdatedAt: formatDate(attributes?.updatedAt),
+                User: attributes?.user?.data?.attributes?.username,
+                ImageUrl: attributes?.image_url?.data ? process.env.REACT_APP_UPLOAD_URL + attributes?.image_url?.data?.attributes?.url : '',
+                AdditionalFields: JSON.stringify(additionalFields),
+            };
+        });
+
+        const csv = Papa.unparse(csvData, {
+            header: true,
+        });
+
+        const blob = new Blob(["\uFEFF" + csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'collections.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     if (loading) {
@@ -64,12 +103,14 @@ const Collections = ({collections: propCollections}) => {
         <Container fluid="md">
             <h1 className="my-4 text-center">{t("my_collections")}</h1>
             <div className="d-flex justify-content-center mb-4">
-                <Link to="/edit-collection/new" className="btn btn-primary">{t("create_collection")}</Link>
+                <Link to="/edit-collection/new" className="btn btn-primary me-3">{t("create_collection")}</Link>
+                <Button onClick={handleExportToCSV} className="btn-secondary">{t("export_to_csv")}</Button>
             </div>
             {collections.length === 0 ? (
                 <p className="text-center">{t("no_collections")}</p>
             ) : (
-                <Table striped bordered hover responsive className={`text-center ${theme === 'light' ? 'table-light' : 'table-dark'}`}>
+                <Table striped bordered hover responsive
+                       className={`text-center ${theme === 'light' ? 'table-light' : 'table-dark'}`}>
                     <thead>
                     <tr>
                         <th>{t("id")}</th>

@@ -111,20 +111,6 @@
   "most_popular_tags": "Most popular tags",
   "latest_added_items": "Latest added items",
   "author": "Author",
-  "5_largest_collections": "5 largest collections"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  "5_largest_collections": "5 largest collections",
+  "export_to_csv": "Export to CSV"
 }

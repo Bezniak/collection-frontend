@@ -97,7 +97,7 @@ const Register = () => {
                     <Button
                         type="submit"
                         variant={`${theme === 'light' ? 'outline-dark' : 'outline-light'}`}
-                        className="w-auto mb-4"
+                        className="w-50 mb-4"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? t('submitting') : t('register')}
