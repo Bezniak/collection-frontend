@@ -9,6 +9,7 @@ import Preloader from "../Preloader/Preloader";
 import {useTranslation} from "react-i18next";
 import {Alert} from "react-bootstrap";
 import {HiOutlinePhoto} from "react-icons/hi2";
+import {useAuth} from "../../context/AuthContext";
 
 const ItemDetails = () => {
     const {t} = useTranslation();
@@ -16,6 +17,7 @@ const ItemDetails = () => {
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const {theme} = useAuth();
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -59,7 +61,8 @@ const ItemDetails = () => {
 
     return (
         <div className="container mt-5 mb-5">
-            <div className="row mb-5 align-items-center position-relative bg-light p-4 rounded shadow">
+            <div
+                className={`row mb-5 align-items-center position-relative p-4 rounded shadow ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}>
                 <div className="col-md-4 text-center">
                     {item?.attributes?.image_url?.data?.attributes?.url ? (
                         <img

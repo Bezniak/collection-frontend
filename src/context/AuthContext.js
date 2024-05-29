@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import api from "../components/utils/api";
 
@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
 
     useEffect(() => {
         const jwt = Cookies.get('JWT');
@@ -26,6 +27,11 @@ export const AuthProvider = ({ children }) => {
             }
         }
     }, []);
+
+    useEffect(() => {
+        document.body.className = theme;
+        Cookies.set('theme', theme, { expires: 365 });
+    }, [theme]);
 
     const fetchUserRole = async () => {
         try {
@@ -73,8 +79,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const toggleTheme = () => {
+        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    };
+
     return (
-        <AuthContext.Provider value={{ user, role, login, logout, updateRole }}>
+        <AuthContext.Provider value={{ user, role, login, logout, updateRole, theme, toggleTheme }}>
             {children}
         </AuthContext.Provider>
     );

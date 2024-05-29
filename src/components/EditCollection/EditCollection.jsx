@@ -10,7 +10,7 @@ const EditCollection = () => {
     const {t} = useTranslation();
     const {id} = useParams();
     const navigate = useNavigate();
-    const {user} = useAuth();
+    const {user, theme} = useAuth();
     const [image, setImage] = useState(null);
     const [collection, setCollection] = useState({
         name: '',
@@ -163,6 +163,7 @@ const EditCollection = () => {
                         value={collection.name}
                         onChange={e => setCollection({...collection, name: e.target.value})}
                         disabled={loadingSubmit}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
                 </Form.Group>
                 <Form.Group>
@@ -174,6 +175,7 @@ const EditCollection = () => {
                         onChange={e => setCollection({...collection, description: e.target.value})}
                         style={{resize: "none"}}
                         disabled={loadingSubmit}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
                 </Form.Group>
                 <Form.Group>
@@ -184,6 +186,7 @@ const EditCollection = () => {
                         value={collection.category}
                         onChange={e => setCollection({...collection, category: e.target.value})}
                         disabled={loadingSubmit}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     >
                         <option value="Books">{t("books")}</option>
                         <option value="Music">{t("music")}</option>
@@ -203,10 +206,11 @@ const EditCollection = () => {
                         accept="image/*"
                         onChange={handleImageChange}
                         disabled={loadingSubmit}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
                     {collection.image_url && <img src={collection.image_url} alt={t("uploaded")}/>}
                 </Form.Group>
-                <h2 className='mt-4 mb-4'>{t("additional_fields")}</h2>
+                <h2 className='mt-4 mb-4 text-center'>{t("additional_fields")}</h2>
                 {collection.additionalFields.map((field, index) => (
                     <div key={index} className="d-flex justify-content-center align-items-end">
                         <div className="col-md-4">
@@ -219,6 +223,7 @@ const EditCollection = () => {
                                     onChange={e => handleFieldChange(index, e)}
                                     style={{width: "100%"}}
                                     disabled={loadingSubmit}
+                                    className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                                 />
                             </Form.Group>
                         </div>
@@ -232,6 +237,7 @@ const EditCollection = () => {
                                     onChange={e => handleFieldChange(index, e)}
                                     style={{width: "100%"}}
                                     disabled={loadingSubmit}
+                                    className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                                 >
                                     <option value="string">{t("string")}</option>
                                     <option value="number">{t("number")}</option>
@@ -242,7 +248,7 @@ const EditCollection = () => {
                             </Form.Group>
                         </div>
                         <div className="col-md-4">
-                            <Button variant="danger" className='w-100' onClick={() => handleRemoveField(index)}
+                            <Button variant="danger" className='mb-3 w-25' onClick={() => handleRemoveField(index)}
                                     disabled={loadingSubmit}>
                                 {t("delete_field")}
                             </Button>
@@ -255,7 +261,7 @@ const EditCollection = () => {
                     </Button>
                 </div>
                 <div className='text-center'>
-                    <Button variant="primary" type="submit" className='mt-5 w-75' disabled={loadingSubmit}>
+                    <Button variant="primary" type="submit" className='mt-5 w-50' disabled={loadingSubmit}>
                         {loadingSubmit ? t("sending") : t("save")}
                     </Button>
 

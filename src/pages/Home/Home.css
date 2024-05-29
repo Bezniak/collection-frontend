@@ -7,24 +7,18 @@
 
 
 .tag-item:hover, .collection-item:hover {
-    background-color: #f8f9fa;
+    /*background-color: #f8f9fa;*/
     transition: background-color 0.3s ease;
 }
 
-.item-card {
+.item-card, .hover {
     cursor: pointer;
     transition: transform 0.2s;
 }
 
-.item-card:hover {
+.item-card:hover, .hover:hover {
     transform: scale(1.05);
 }
 
-.card-title a {
-    color: #007bff;
-    text-decoration: none;
-}
 
-.card-title a:hover {
-    text-decoration: underline;
-}
+

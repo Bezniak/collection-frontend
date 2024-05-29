@@ -16,7 +16,7 @@ import useFetch from "../utils/useFetch";
 const AdminPanel = () => {
     const {data, loading, error, refetch} = useFetch(`/users?populate=*`);
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const {user, updateRole} = useAuth();
+    const {user, updateRole, theme} = useAuth();
     const jwt = Cookies.get('JWT');
     const {t} = useTranslation();
 
@@ -131,7 +131,8 @@ const AdminPanel = () => {
                     <span>{t("delete")}</span>
                 </button>
             </div>
-            <Table striped bordered hover responsive="md">
+            <Table striped bordered hover responsive="md"
+                   className={`table ${theme === 'light' ? 'table-light' : 'table-dark'}`}>
                 <thead className="bg-dark text-white">
                 <tr>
                     <th>
@@ -178,6 +179,7 @@ const AdminPanel = () => {
                                     <NavLink
                                         to={`/collections/${user.id}`}
                                         key={collection.id}
+                                        className={`link-info ${theme === 'light' ? 'text-dark' : 'text-light'}`}
                                     >
                                         {collection.name}
                                     </NavLink>

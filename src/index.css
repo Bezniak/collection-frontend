@@ -9,3 +9,19 @@
 .custom-image:hover {
     transform: scale(1.05);
 }
+
+
+body.light {
+    --bg-color: white;
+    --text-color: black;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+body.dark {
+    --bg-color: #212529;
+    --text-color: white;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+

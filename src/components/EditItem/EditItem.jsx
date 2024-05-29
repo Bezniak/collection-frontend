@@ -13,7 +13,7 @@ const EditItem = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const {user} = useAuth();
+    const {user, theme} = useAuth();
     const userName = user ? user.username : '';
     const userId = user ? user.user_id : '';
     const collectionId = new URLSearchParams(location.search).get('collection');
@@ -175,10 +175,11 @@ const EditItem = () => {
             return (
                 <Form.Control
                     as="textarea"
-                    style={{resize: "none"}}
+                    style={{resize: "none", height: '200px'}}
                     name={key}
                     value={item.additionalFields[key] || ''}
                     onChange={handleFieldChange}
+                    className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                 />
             );
         }
@@ -192,6 +193,7 @@ const EditItem = () => {
                         checked={item.additionalFields[key] || false}
                         onChange={handleFieldChange}
                         label={t("yes")}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
                     <Form.Check
                         type="checkbox"
@@ -199,6 +201,7 @@ const EditItem = () => {
                         checked={!item.additionalFields[key]}
                         onChange={handleFieldChange}
                         label={t("no")}
+                        className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
                 </div>
             );
@@ -210,6 +213,7 @@ const EditItem = () => {
                 name={key}
                 value={item.additionalFields[key] || ''}
                 onChange={handleFieldChange}
+                className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
             />
         );
     };
@@ -257,6 +261,7 @@ const EditItem = () => {
                             name="name"
                             value={item.name}
                             onChange={e => setItem({...item, name: e.target.value})}
+                            className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                         />
                     </Form.Group>
                     <Form.Group controlId="itemTags">
@@ -268,6 +273,7 @@ const EditItem = () => {
                                 value={item.tags}
                                 onChange={handleTagInputChange}
                                 onBlur={() => setSuggestions([])}
+                                className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                             />
                             {suggestions.length > 0 && (
                                 <div className="suggestions">
@@ -287,6 +293,7 @@ const EditItem = () => {
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
+                            className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                         />
                         {item.image_url && <Image src={item.image_url} alt={t("uploaded")} thumbnail/>}
                     </Form.Group>
@@ -297,7 +304,7 @@ const EditItem = () => {
                         </Form.Group>
                     ))}
                     <div className="text-center">
-                        <Button variant="primary" type="submit" className='mt-5 w-75' disabled={isSubmitting}>
+                        <Button variant="primary" type="submit" className='mt-5 w-25' disabled={isSubmitting}>
                             {isSubmitting ? t("sending") : t("save")}
                         </Button>
                     </div>

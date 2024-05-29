@@ -15,7 +15,7 @@ const Collections = ({collections: propCollections}) => {
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const {user, role} = useAuth();
+    const {user, role, theme} = useAuth();
 
     useEffect(() => {
         const fetchCollections = async () => {
@@ -69,7 +69,7 @@ const Collections = ({collections: propCollections}) => {
             {collections.length === 0 ? (
                 <p className="text-center">{t("no_collections")}</p>
             ) : (
-                <Table striped bordered hover responsive className="text-center">
+                <Table striped bordered hover responsive className={`text-center ${theme === 'light' ? 'table-light' : 'table-dark'}`}>
                     <thead>
                     <tr>
                         <th>{t("id")}</th>

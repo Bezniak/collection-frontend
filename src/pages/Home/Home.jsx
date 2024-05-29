@@ -5,6 +5,7 @@ import {Alert, Card, Col, Container, ListGroup, Row} from 'react-bootstrap';
 import './Home.css';
 import {useTranslation} from "react-i18next";
 import Preloader from "../../components/Preloader/Preloader";
+import {useAuth} from "../../context/AuthContext";
 
 const Home = () => {
     const {t} = useTranslation();
@@ -13,6 +14,7 @@ const Home = () => {
     const [largestCollections, setLargestCollections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const {theme} = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,49 +98,69 @@ const Home = () => {
     }
 
     return (
-        <Container className='mt-5 mb-5'>
-            <h1 className="my-4">{t("most_popular_tags")}:</h1>
-            {popularTags.length > 0 && (
-                <ListGroup className="tag-list">
-                    {popularTags.map((tagObj, index) => (
-                        <ListGroup.Item key={index} className="tag-item text-center">
-                            <Link to={`/item/${tagObj.id}`} className='text-decoration-none '>{tagObj.tag}</Link>
-                        </ListGroup.Item>
-                    ))}
-                </ListGroup>
-            )}
+        <Container className='mt-5 mb-5 d-flex flex-column justify-content-between gap-5'>
+            <div>
+                <h1 className="my-4">{t("most_popular_tags")}</h1>
+                {popularTags.length > 0 && (
+                    <ListGroup className="tag-list ">
+                        {popularTags.map((tagObj, index) => (
+                            <ListGroup.Item key={index}
+                                            className={`hover tag-item text-center ${theme === "light" ? "bg-light text-dark" : "bg-dark text-light"}`}
+                            >
+                                <Link to={`/item/${tagObj.id}`}
+                                      className={`text-decoration-none ${theme === "light" ? "text-dark" : "text-light"}`}
+                                >
+                                    {tagObj.tag}
+                                </Link>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                )}
+            </div>
 
 
-            <h1 className="my-4">{t("latest_added_items")}:</h1>
-            {latestItems.length > 0 && (
-                <Row>
-                    {latestItems.map((item, index) => (
-                        <Col md={6} lg={4} key={index} className="mb-4">
-                            <Card className="item-card h-100">
-                                <Card.Body>
-                                    <Card.Title>
-                                        <Link to={`/item/${item.id}`}>{item.name}</Link>
-                                    </Card.Title>
-                                    <Card.Text>
-                                        {t("collection")}: {item.collection}, {t("author")}: {item.author}
-                                    </Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            )}
+            <div>
+                <h1 className="my-4">{t("latest_added_items")}</h1>
+                {latestItems.length > 0 && (
+                    <Row>
+                        {latestItems.map((item, index) => (
+                            <Col md={6} lg={4} key={index} className="mb-4">
+                                <Card
+                                    className={` item-card h-100 ${theme === "light" ? "bg-light" : "bg-dark border-light"}`}>
+                                    <Card.Body
+                                        className=' d-flex flex-column align-items-center justify-content-between'>
+                                        <Card.Title className='text-center'>
+                                            <Link to={`/item/${item.id}`}
+                                                  className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}>{item.name}</Link>
+                                        </Card.Title>
+                                        <Card.Text className={`${theme === 'light' ? 'text-dark' : 'text-light'}`}>
+                                            {t("collection")}: {item.collection}, {t("author")}: {item.author}
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
+            </div>
 
-            <h1 className="my-4">{t("5_largest_collections")}:</h1>
-            {largestCollections.length > 0 && (
-                <ListGroup className="w-25">
-                    {largestCollections.map((collection, index) => (
-                        <ListGroup.Item key={index} className="collection-item">
-                            <Link to={`/collection/${collection.id}`}>{collection.name}</Link>
-                        </ListGroup.Item>
-                    ))}
-                </ListGroup>
-            )}
+            <div>
+                <h1 className="my-4">{t("5_largest_collections")}</h1>
+                {largestCollections.length > 0 && (
+                    <ListGroup className="w-25">
+                        {largestCollections.map((collection, index) => (
+                            <ListGroup.Item key={index}
+                                            className={`hover collection-item text-center ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}>
+                                <Link to={`/collection/${collection.id}`}
+                                      className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}
+                                >
+                                    {collection.name}
+                                </Link>
+                            </ListGroup.Item>
+                        ))}
+                    </ListGroup>
+                )}
+            </div>
         </Container>
     );
 };

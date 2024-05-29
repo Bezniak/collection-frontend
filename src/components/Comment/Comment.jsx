@@ -16,7 +16,8 @@ const Comment = ({itemId}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [editingCommentId, setEditingCommentId] = useState(null);
-    const {user, role} = useAuth();
+    const {user, role, theme} = useAuth();
+
 
     const getAllComments = async () => {
         try {
@@ -122,8 +123,9 @@ const Comment = ({itemId}) => {
                             <FloatingLabel controlId="floatingTextarea2" label={`${t("comment_label")}`}>
                                 <Form.Control
                                     as="textarea"
+                                    className={`${theme === 'light' ? 'bg-light' : 'bg-dark text-light'}`}
                                     placeholder={`${t("comment_label")}`}
-                                    style={{height: '150px', resize: 'none'}}
+                                    style={{height: '150px', resize: 'none', paddingTop: "40px"}}
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
                                 />
@@ -131,15 +133,15 @@ const Comment = ({itemId}) => {
                         </Col>
                     </Row>
                     <Row className="mt-2">
-                        <Col>
-                            <Button variant="success" className="w-100" onClick={onSubmit}>
+                        <Col className='mt-3 d-flex justify-content-end'>
+                            <Button variant="success" className="w-25" onClick={onSubmit}>
                                 {t("send")}
                             </Button>
                         </Col>
                     </Row>
                 </>
             ) : (
-                <Container>
+                <Container >
                     <Row className="justify-content-end">
                         <Col>
                             <h5 className="text-end">
@@ -150,13 +152,13 @@ const Comment = ({itemId}) => {
                     </Row>
                 </Container>
             )}
-            <Row className="mt-4">
+            <Row className="mt-4" >
                 <Col>
                     {!loading && !error && comments.length === 0 && <p>{t("no_comments_yet")}</p>}
                     {!loading &&
                         !error &&
                         comments.map((comment) => (
-                            <Card key={comment.id} className="border p-2 mt-2">
+                            <Card key={comment.id} className={`p-2 mt-2 ${theme === 'light' ? 'bg-light' : 'bg-dark text-light'}`}>
                                 <Card.Body>
                                     <Card.Title>{comment.attributes.user.data.attributes.username}</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">
@@ -166,6 +168,8 @@ const Comment = ({itemId}) => {
                                         <>
                                             <Form.Control
                                                 as="textarea"
+                                                className={`${theme === 'light' ? 'bg-light' : 'bg-dark text-light'}`}
+                                                style={{resize: 'none'}}
                                                 value={comment.attributes.text}
                                                 onChange={(e) =>
                                                     setComments(
@@ -183,28 +187,30 @@ const Comment = ({itemId}) => {
                                                     )
                                                 }
                                             />
-                                            <Button
-                                                variant="success"
-                                                className="mt-2"
-                                                onClick={() => onEdit(comment.id, comment.attributes.text)}
-                                            >
-                                                Save
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                className="mt-2 ms-2"
-                                                onClick={() => setEditingCommentId(null)}
-                                            >
-                                                {t("cancel")}
-                                            </Button>
+                                            <div className='d-flex justify-content-end mt-3'>
+                                                <Button
+                                                    variant="success"
+                                                    className="mt-2"
+                                                    onClick={() => onEdit(comment.id, comment.attributes.text)}
+                                                >
+                                                    {t("save")}
+                                                </Button>
+                                                <Button
+                                                    variant="danger"
+                                                    className="mt-2 ms-2"
+                                                    onClick={() => setEditingCommentId(null)}
+                                                >
+                                                    {t("cancel")}
+                                                </Button>
+                                            </div>
                                         </>
                                     ) : (
                                         <>
                                             <Card.Text>{comment.attributes.text}</Card.Text>
                                             {(user && user.id === comment.attributes.user.data.id || role === 'admin') && (
-                                                <>
+                                                <div className='d-flex justify-content-end'>
                                                     <Button
-                                                        variant="primary"
+                                                        variant="warning"
                                                         className="me-2"
                                                         onClick={() => setEditingCommentId(comment.id)}
                                                     >
@@ -213,7 +219,7 @@ const Comment = ({itemId}) => {
                                                     <Button variant="danger" onClick={() => onDelete(comment.id)}>
                                                         {t("delete")}
                                                     </Button>
-                                                </>
+                                                </div>
                                             )}
                                         </>
                                     )}

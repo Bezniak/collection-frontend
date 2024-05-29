@@ -16,7 +16,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
     const [items, setItems] = useState(propItems || []);
     const [loading, setLoading] = useState(!propCollection || !propItems);
     const [error, setError] = useState(null);
-    const {user, role} = useAuth();
+    const {user, role, theme} = useAuth();
     const [sortField, setSortField] = useState('id');
     const [sortDirection, setSortDirection] = useState('ascending');
 
@@ -127,7 +127,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
             </div>
 
             {items && (
-                <Table striped bordered hover>
+                <Table striped bordered hover className={`table ${theme === 'light' ? 'table-light' : 'table-dark'}`}>
                     <thead>
                     <tr className='text-center'>
                         <th>{t("id")}</th>
