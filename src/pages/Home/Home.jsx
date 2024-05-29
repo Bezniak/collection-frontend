@@ -16,6 +16,10 @@ const Home = () => {
     const [error, setError] = useState(null);
     const {theme} = useAuth();
 
+    console.log('popularTags', popularTags)
+    console.log('latestItems', latestItems)
+    console.log('largestCollections', largestCollections)
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -100,7 +104,9 @@ const Home = () => {
     return (
         <Container className='mt-5 mb-5 d-flex flex-column justify-content-between gap-5'>
             <div>
-                <h1 className="my-4">{t("most_popular_tags")}</h1>
+                <h1 className="my-4">
+                    {popularTags.length > 0 && t("most_popular_tags")}
+                </h1>
                 {popularTags.length > 0 && (
                     <ListGroup className="tag-list ">
                         {popularTags.map((tagObj, index) => (
@@ -120,7 +126,9 @@ const Home = () => {
 
 
             <div>
-                <h1 className="my-4">{t("latest_added_items")}</h1>
+                <h1 className="my-4">
+                    {latestItems.length > 0 && t("latest_added_items")}
+                </h1>
                 {latestItems.length > 0 && (
                     <Row>
                         {latestItems.map((item, index) => (
@@ -145,7 +153,9 @@ const Home = () => {
             </div>
 
             <div>
-                <h1 className="my-4">{t("5_largest_collections")}</h1>
+                <h1 className="my-4">
+                    {largestCollections.length > 0 && t("5_largest_collections")}
+                </h1>
                 {largestCollections.length > 0 && (
                     <ListGroup className="w-25">
                         {largestCollections.map((collection, index) => (

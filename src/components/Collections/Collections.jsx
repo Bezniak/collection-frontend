@@ -17,6 +17,8 @@ const Collections = ({collections: propCollections}) => {
     const [error, setError] = useState(null);
     const {user, role, theme} = useAuth();
 
+    console.log('collections', collections)
+
     useEffect(() => {
         const fetchCollections = async () => {
             try {

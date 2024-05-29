@@ -7,9 +7,16 @@ import Container from "react-bootstrap/Container";
 import './EditItem.css';
 import {useTranslation} from "react-i18next";
 import Preloader from "../Preloader/Preloader";
+import DatePicker, {registerLocale} from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {enUS, pl} from 'date-fns/locale';
+
+// Register the locales
+registerLocale('en-US', enUS);
+registerLocale('pl', pl);
 
 const EditItem = () => {
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
     const {id} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -107,7 +114,8 @@ const EditItem = () => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const inputTags = item.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+        // Split tags by spaces and commas, trim whitespace, and filter out empty tags
+        const inputTags = item.tags.split(/[\s,]+/).map(tag => tag.trim()).filter(tag => tag !== '');
         const existingTags = [];
         const newTags = [];
 
@@ -121,7 +129,7 @@ const EditItem = () => {
 
         const data = {
             name: item.name,
-            tags: item.tags,
+            tags: inputTags.join(', '),  // Join tags back into a string separated by commas
             user_name: user.username,
             user_id: user.user_id,
             collection: collectionId,
@@ -158,6 +166,22 @@ const EditItem = () => {
         }
     };
 
+    const getInputType = (type) => {
+        switch (type) {
+            case 'string':
+                return 'text';
+            case 'number':
+                return 'number';
+            case 'date':
+                return 'date';
+            case 'boolean':
+                return 'checkbox';
+            default:
+                return 'text';
+        }
+    };
+
+
     const handleFieldChange = (e) => {
         const {name, value, type, checked} = e.target;
         const fieldValue = type === 'checkbox' ? checked : value;
@@ -165,8 +189,20 @@ const EditItem = () => {
             ...item,
             additionalFields: {
                 ...item.additionalFields,
-                [name]: fieldValue
-            }
+                [name]: fieldValue,
+            },
+        });
+    };
+
+    const handleDateChange = (key, date) => {
+        // Convert date to ISO string and slice to get only the date part
+        const dateString = date.toISOString().split('T')[0];
+        setItem({
+            ...item,
+            additionalFields: {
+                ...item.additionalFields,
+                [key]: dateString,
+            },
         });
     };
 
@@ -207,6 +243,22 @@ const EditItem = () => {
             );
         }
 
+        if (type === 'date') {
+            return (
+                <div className="mb-3">
+                    <DatePicker
+                        selected={item.additionalFields[key] ? new Date(item.additionalFields[key]) : null}
+                        onChange={date => handleDateChange(key, date)}
+                        className={`form-control ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
+                        dateFormat="dd-MM-yyyy"
+                        locale={i18n.language === 'pl' ? 'pl' : 'en-US'}
+                        showWeekNumbers
+                        weekStart={1}
+                    />
+                </div>
+            );
+        }
+
         return (
             <Form.Control
                 type={getInputType(type)}
@@ -218,35 +270,20 @@ const EditItem = () => {
         );
     };
 
-    const getInputType = (type) => {
-        switch (type) {
-            case 'string':
-                return 'text';
-            case 'number':
-                return 'number';
-            case 'date':
-                return 'date';
-            case 'boolean':
-                return 'checkbox';
-            default:
-                return 'text';
-        }
-    };
-
     if (loading) {
-        return <Preloader/>
+        return <Preloader/>;
     }
 
     if (error) {
         return (
-            <div>
-                <Alert variant="danger" className="w-25 m-5 d-flex justify-content-center align-items-center">
+            <div className="d-flex justify-content-center align-items-center">
+                <Alert variant="danger"
+                       className="text-center d-flex flex-column justify-content-center align-items-center">
                     Error: {error.message}
                 </Alert>
             </div>
         );
     }
-
 
     return (
         <Container className='mt-5 mb-5'>
@@ -276,7 +313,8 @@ const EditItem = () => {
                                 className={`mb-3 ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                             />
                             {suggestions.length > 0 && (
-                                <div className="suggestions">
+                                <div
+                                    className={`suggestions ${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}>
                                     {suggestions.map((suggestion, index) => (
                                         <div key={index} className="suggestion-item"
                                              onMouseDown={() => handleTagClick(suggestion.tag)}>

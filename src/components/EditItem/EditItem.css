@@ -1,5 +1,6 @@
 .suggestions {
     position: absolute;
+    margin-top: 45px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
@@ -15,5 +16,5 @@
 }
 
 .suggestion-item:hover {
-    background-color: #f8f9fa;
+    background-color: gray;
 }

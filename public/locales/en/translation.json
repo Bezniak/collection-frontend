@@ -112,5 +112,6 @@
   "latest_added_items": "Latest added items",
   "author": "Author",
   "5_largest_collections": "5 largest collections",
-  "export_to_csv": "Export to CSV"
+  "export_to_csv": "Export to CSV",
+  "user_deleted": "User deleted"
 }

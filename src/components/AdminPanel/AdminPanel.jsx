@@ -62,7 +62,7 @@ const AdminPanel = () => {
     const handleDeleteUser = async () => {
         try {
             await Promise.all(selectedUsers.map(async (userId) => {
-                await axios.delete(process.env.REACT_APP_API_URL + `/users/${userId}?populate=*`, {
+                await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${jwt}`
                     }
@@ -74,6 +74,7 @@ const AdminPanel = () => {
             console.error('Error deleting user:', error);
         }
     };
+
 
     const handleSelectAll = () => {
         setSelectedUsers(selectedUsers.length === data.length
