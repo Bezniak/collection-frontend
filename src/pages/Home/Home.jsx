@@ -127,8 +127,6 @@ const Home = () => {
                     </ListGroup>
                 )}
             </div>
-
-
             <div>
                 <h1 className="my-4">
                     {latestItems.length > 0 && t("latest_added_items")}
@@ -173,13 +171,13 @@ const Home = () => {
                     </div>
                 )}
             </div>
-
             <div>
                 <h1 className="my-4">
                     {largestCollections.length > 0 && t("5_largest_collections")}
                 </h1>
                 {largestCollections.length > 0 && (
-                    <ListGroup className="w-25">
+                    <ListGroup
+                        className="w-25 d-flex flex-row flex-wrap gap-5 justify-content-center align-items-center">
                         {largestCollections.map((collection, index) => (
                             <Link key={index} to={`/collection/${collection.id}`} className="text-decoration-none">
                                 <ListGroup.Item
@@ -201,7 +199,6 @@ const Home = () => {
                         ))}
                     </ListGroup>
                 )}
-
             </div>
         </Container>
     );

@@ -8,6 +8,17 @@
     transition: background-color 0.3s ease;
 }
 
+.item-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Растягиваем карточку на всю высоту родительского элемента */
+}
+
+.item-card .card-body {
+    flex: 1; /* Растягиваем содержимое карточки, чтобы занять все доступное пространство по вертикали */
+}
+
+
 .item-card, .hover {
     cursor: pointer;
     transition: transform 0.2s;
