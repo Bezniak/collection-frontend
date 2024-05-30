@@ -77,7 +77,8 @@ const ItemDetails = () => {
 
                 <div className="col-md-8 d-flex flex-column justify-content-start">
                     <div className="text-start text-md-left">
-                        <h1 className="mt-3 text-capitalize">{item.attributes.name}</h1>
+                        <h1 className="mt-3 text-capitalize"
+                            style={{wordBreak: 'break-word'}}>{item.attributes.name}</h1>
                         <p className="">{t("tags")}: {item.attributes.tags}</p>
                         {item.attributes.additionalFields && Object.keys(item.attributes.additionalFields).map(key => (
                             <p key={key} className="mb-2">
