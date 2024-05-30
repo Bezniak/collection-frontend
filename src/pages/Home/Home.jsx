@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import {Alert, Card, Col, Container, ListGroup, Row} from 'react-bootstrap';
+import {Alert, Card, Col, Container, Image, ListGroup, Row} from 'react-bootstrap';
 import './Home.css';
 import {useTranslation} from "react-i18next";
 import Preloader from "../../components/Preloader/Preloader";
@@ -72,7 +72,8 @@ const Home = () => {
                 name: item.attributes.name,
                 collection: collectionName,
                 author: item.attributes.user?.data?.attributes?.username || `${t("unknown")}`,
-                id: item.id
+                id: item.id,
+                img: item?.attributes?.image_url?.data?.attributes?.url || null
             };
         });
     };
@@ -81,7 +82,9 @@ const Home = () => {
         const collections = data.map(collection => ({
             id: collection.id,
             name: collection.attributes.name,
-            itemCount: collection.attributes.items?.data?.length || 0
+            itemCount: collection.attributes.items?.data?.length || 0,
+            img: collection?.attributes?.image_url?.data?.attributes?.url || null
+
         }));
         collections.sort((a, b) => b.itemCount - a.itemCount);
         return collections.slice(0, 5);
@@ -100,6 +103,7 @@ const Home = () => {
             </div>
         );
     }
+
 
     return (
         <Container className='mt-5 mb-5 d-flex flex-column justify-content-between gap-5'>
@@ -130,25 +134,43 @@ const Home = () => {
                     {latestItems.length > 0 && t("latest_added_items")}
                 </h1>
                 {latestItems.length > 0 && (
-                    <Row>
-                        {latestItems.map((item, index) => (
-                            <Col key={index} className="mb-4">
-                                <Card
-                                    className={` item-card h-100 ${theme === "light" ? "bg-light" : "bg-dark border-light"}`}>
-                                    <Card.Body
-                                        className='w-auto d-flex flex-column align-items-center justify-content-between'>
-                                        <Card.Title className='text-center'>
-                                            <Link to={`/item/${item.id}`}
-                                                  className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}>{item.name}</Link>
-                                        </Card.Title>
-                                        <Card.Text className={`${theme === 'light' ? 'text-dark' : 'text-light'}`}>
-                                            {t("collection")}: {item.collection}, {t("author")}: {item.author}
-                                        </Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
+                    <div className="container-fluid">
+                        <Row>
+                            {latestItems.map((item, index) => (
+                                <Col key={index} className="mb-4">
+                                    <Link to={`/item/${item.id}`} className="text-decoration-none">
+                                        <Card
+                                            className={`item-card ${theme === "light" ? "bg-light" : "bg-dark border-light"}`}
+                                        >
+                                            <Card.Body
+                                                className='d-flex align-items-center justify-content-center gap-5'>
+
+                                                {item.img && (
+                                                    <Image
+                                                        src={item.img}
+                                                        alt={item.name}
+                                                        className="custom-image"
+                                                        rounded
+                                                    />
+                                                )}
+                                                <div
+                                                    className='d-flex flex-column align-items-center justify-content-center'>
+                                                    <Card.Title
+                                                        className={`text-center mt-3 ${theme === 'light' ? 'text-dark' : 'text-light'}`}>
+                                                        {item.name}
+                                                    </Card.Title>
+                                                    <Card.Text
+                                                        className={`${theme === 'light' ? 'text-dark' : 'text-light'}`}>
+                                                        {t("collection")}: {item.collection}, {t("author")}: {item.author}
+                                                    </Card.Text>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+                                    </Link>
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
                 )}
             </div>
 
@@ -159,17 +181,27 @@ const Home = () => {
                 {largestCollections.length > 0 && (
                     <ListGroup className="w-25">
                         {largestCollections.map((collection, index) => (
-                            <ListGroup.Item key={index}
-                                            className={`hover collection-item text-center ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}>
-                                <Link to={`/collection/${collection.id}`}
-                                      className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}
+                            <Link key={index} to={`/collection/${collection.id}`} className="text-decoration-none">
+                                <ListGroup.Item
+                                    className={`hover d-flex flex-column align-items-center justify-content-center gap-3 collection-item text-center ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}
                                 >
-                                    {collection.name}
-                                </Link>
-                            </ListGroup.Item>
+                                    {collection.img && (
+                                        <Image
+                                            src={collection.img}
+                                            alt={collection.name}
+                                            className="custom-image"
+                                            rounded
+                                        />
+                                    )}
+                                    <span className={`text ${theme === 'light' ? 'text-dark' : 'text-light'}`}>
+                        {collection.name}
+                    </span>
+                                </ListGroup.Item>
+                            </Link>
                         ))}
                     </ListGroup>
                 )}
+
             </div>
         </Container>
     );

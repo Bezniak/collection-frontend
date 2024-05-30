@@ -18,6 +18,8 @@ const ItemDetails = () => {
     const [error, setError] = useState(null);
     const {theme} = useAuth();
 
+    console.log('item', item)
+
     useEffect(() => {
         const fetchItem = async () => {
             try {
@@ -65,7 +67,7 @@ const ItemDetails = () => {
                 <div className="col-md-4 text-center">
                     {item?.attributes?.image_url?.data?.attributes?.url ? (
                         <img
-                            src={process.env.REACT_APP_UPLOAD_URL + item?.attributes?.image_url?.data?.attributes?.url}
+                            src={item?.attributes?.image_url?.data?.attributes?.url}
                             alt={item?.attributes?.image_url?.data?.attributes?.name}
                             className="img-fluid rounded shadow-sm"
                             style={{maxWidth: '100%', height: 'auto'}}

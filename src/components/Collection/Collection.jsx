@@ -150,7 +150,7 @@ const Collection = ({collection: propCollection, items: propItems}) => {
                             <td style={{textAlign: "center", verticalAlign: "middle"}}>
                                 {item.attributes?.image_url?.data ? (
                                     <Image
-                                        src={process.env.REACT_APP_UPLOAD_URL + item.attributes?.image_url?.data?.attributes?.url}
+                                        src={item.attributes?.image_url?.data?.attributes?.url}
                                         alt={collection.attributes?.image_url?.data?.attributes?.name}
                                         className="custom-image"
                                         rounded
