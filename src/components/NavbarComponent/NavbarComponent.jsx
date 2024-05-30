@@ -51,7 +51,8 @@ const NavbarComponent = () => {
             <Container fluid>
                 <NavLink to='/'
                          className={`navbar-brand ${theme === 'light' ? 'text-light' : 'text-light'}`}>{t("siteName")}</NavLink>
-                <Navbar.Toggle aria-controls="navbarScroll" className={`${theme === 'light' ? 'bg-light' : 'bg-light'}`}/>
+                <Navbar.Toggle aria-controls="navbarScroll"
+                               className={`${theme === 'light' ? 'bg-light' : 'bg-light'}`}/>
                 <Navbar.Collapse id="navbarScroll">
                     <Nav className={`me-auto my-2 my-lg-0 ${theme === 'light' ? 'navbar-dark' : 'navbar-light'}`}
                          style={{maxHeight: '100px'}} navbarScroll>
@@ -64,7 +65,6 @@ const NavbarComponent = () => {
                                 </>
                             )
                         }
-
                         <NavDropdown title={t("language")} id="languageDropdown"
                                      className={`${theme === 'light' ? 'navbar-dark' : 'navbar-light'}`}>
                             <NavDropdown.Item onClick={() => changeLanguage('en')}>
@@ -76,8 +76,6 @@ const NavbarComponent = () => {
                                 {t("polish")}
                             </NavDropdown.Item>
                         </NavDropdown>
-
-
                         <NavDropdown title={t("theme")} id="navbarScrollingDropdown"
                                      className={`${theme === 'light' ? 'text-dark' : 'text-light'}`}>
                             <NavDropdown.Item onClick={toggleTheme}>
@@ -95,8 +93,6 @@ const NavbarComponent = () => {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-
-
                     <Nav className={`me-auto my-2 my-lg-0 ${theme === 'light' ? 'navbar-dark' : 'navbar-light'}`}
                          style={{maxHeight: '100px'}} navbarScroll>
                         {user && (
@@ -119,8 +115,6 @@ const NavbarComponent = () => {
                             </NavDropdown>
                         )}
                     </Nav>
-
-
                     <Form className={`d-flex`} onSubmit={handleSearch}>
                         <Form.Control
                             type="search"

@@ -125,7 +125,6 @@ const EditCollection = () => {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-
             await request;
             setError(null);
             navigate('/collections');
@@ -212,7 +211,7 @@ const EditCollection = () => {
                 </Form.Group>
                 <h2 className='mt-4 mb-4 text-center'>{t("additional_fields")}</h2>
                 {collection.additionalFields.map((field, index) => (
-                    <div key={index} className="d-flex justify-content-center align-items-end">
+                    <div key={index} className="d-flex justify-content-center align-items-end flex-wrap">
                         <div className="col-md-4">
                             <Form.Group style={{marginRight: '20px'}}>
                                 <Form.Label>{t("field_name")}:</Form.Label>
@@ -248,7 +247,7 @@ const EditCollection = () => {
                             </Form.Group>
                         </div>
                         <div className="col-md-4">
-                            <Button variant="danger" className='mb-3 w-25' onClick={() => handleRemoveField(index)}
+                            <Button variant="danger" className='mb-3 w-auto' onClick={() => handleRemoveField(index)}
                                     disabled={loadingSubmit}>
                                 {t("delete_field")}
                             </Button>
@@ -256,7 +255,7 @@ const EditCollection = () => {
                     </div>
                 ))}
                 <div className='text-center mt-4'>
-                    <Button variant="warning" className='w-25' onClick={handleAddField} disabled={loadingSubmit}>
+                    <Button variant="warning" className='w-auto' onClick={handleAddField} disabled={loadingSubmit}>
                         {t("add_a_field")}
                     </Button>
                 </div>

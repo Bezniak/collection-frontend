@@ -1,15 +1,13 @@
-.custom-image {
-    width: 100px;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid #f0f0f0;
-    transition: transform 0.2s;
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+body {
+    font-family: "Mulish", sans-serif !important;
 }
 
-.custom-image:hover {
-    transform: scale(1.05);
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Noto Serif", serif !important;
 }
-
 
 body.light {
     --bg-color: white;
@@ -24,4 +22,19 @@ body.dark {
     background-color: var(--bg-color);
     color: var(--text-color);
 }
+
+.custom-image {
+    width: 100px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #f0f0f0;
+    transition: transform 0.2s;
+}
+
+.custom-image:hover {
+    transform: scale(1.05);
+}
+
+
+
 

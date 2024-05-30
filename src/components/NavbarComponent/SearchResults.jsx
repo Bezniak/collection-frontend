@@ -29,7 +29,8 @@ const SearchResults = () => {
                                                 {result.name}
                                             </NavLink>
                                         ) : (
-                                            <NavLink to={`/item/${result.id}`} className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}>
+                                            <NavLink to={`/item/${result.id}`}
+                                                     className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}>
                                                 {result.name}
                                             </NavLink>
                                         )}

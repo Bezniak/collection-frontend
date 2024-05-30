@@ -3,7 +3,6 @@ import {useParams} from 'react-router-dom';
 import api from "../utils/api";
 import {formatDate} from '../utils/formatDate';
 import LikeHandler from "../LikeHandler/LikeHandler";
-import './ItemDetails.css';
 import Comment from "../Comment/Comment";
 import Preloader from "../Preloader/Preloader";
 import {useTranslation} from "react-i18next";
@@ -79,7 +78,7 @@ const ItemDetails = () => {
                 <div className="col-md-8 d-flex flex-column justify-content-start">
                     <div className="text-start text-md-left">
                         <h1 className="mt-3 text-capitalize">{item.attributes.name}</h1>
-                        <p className="text-muted">{t("tags")}: {item.attributes.tags}</p>
+                        <p className="">{t("tags")}: {item.attributes.tags}</p>
                         {item.attributes.additionalFields && Object.keys(item.attributes.additionalFields).map(key => (
                             <p key={key} className="mb-2">
                                 <strong>{key}:</strong> {formatFieldValue(item.attributes.additionalFields[key])}

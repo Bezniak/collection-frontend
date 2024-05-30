@@ -16,16 +16,16 @@ const Home = () => {
     const [error, setError] = useState(null);
     const {theme} = useAuth();
 
-    console.log('popularTags', popularTags)
-    console.log('latestItems', latestItems)
-    console.log('largestCollections', largestCollections)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const popularTagsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/items?populate=*`);
-                const latestItemsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/items?sort=createdAt:desc&populate=*`);
-                const largestCollectionsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/collections?populate=*`);
+                const popularTagsResponse = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/items?populate=*`);
+                const latestItemsResponse = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/items?sort=createdAt:desc&populate=*`);
+                const largestCollectionsResponse = await axios.get(
+                    `${process.env.REACT_APP_API_URL}/collections?populate=*`);
 
                 const popularTagsData = processTags(popularTagsResponse.data.data);
                 const latestItemsData = processLatestItems(latestItemsResponse.data.data);
@@ -132,11 +132,11 @@ const Home = () => {
                 {latestItems.length > 0 && (
                     <Row>
                         {latestItems.map((item, index) => (
-                            <Col md={6} lg={4} key={index} className="mb-4">
+                            <Col key={index} className="mb-4">
                                 <Card
                                     className={` item-card h-100 ${theme === "light" ? "bg-light" : "bg-dark border-light"}`}>
                                     <Card.Body
-                                        className=' d-flex flex-column align-items-center justify-content-between'>
+                                        className='w-auto d-flex flex-column align-items-center justify-content-between'>
                                         <Card.Title className='text-center'>
                                             <Link to={`/item/${item.id}`}
                                                   className={`text-decoration-none ${theme === 'light' ? 'text-dark' : 'text-light'}`}>{item.name}</Link>

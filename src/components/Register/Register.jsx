@@ -1,25 +1,30 @@
-import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import React, {useState} from 'react';
+import {useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
+import {useAuth} from "../../context/AuthContext";
+import {useNavigate} from "react-router-dom";
 import api from "../utils/api";
-import { v4 as uuidv4 } from 'uuid';
-import { Button, Form, Container, Alert, Row, Col } from "react-bootstrap";
+import {v4 as uuidv4} from 'uuid';
+import {Alert, Button, Container, Form} from "react-bootstrap";
 
 const Register = () => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}, reset
+    }
+        = useForm();
     const [errorMessage, setErrorMessage] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { login, theme } = useAuth();
+    const {login, theme} = useAuth();
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
         try {
             const user_id = uuidv4();
-            const userData = { ...data, user_id };
+            const userData = {...data, user_id};
             const response = await api.post('/auth/local/register', userData);
             login(response);
             navigate('/');
@@ -35,6 +40,7 @@ const Register = () => {
         }
     };
 
+
     return (
         <Container className="vh-100 d-flex justify-content-center align-items-center">
             <Form className="col-lg-6" onSubmit={handleSubmit(onSubmit)}>
@@ -43,11 +49,12 @@ const Register = () => {
                     <Form.Control
                         type="text"
                         isInvalid={!!errors.username}
-                        {...register('username', { required: true })}
+                        {...register('username', {required: true})}
                         placeholder={t('enter_name')}
                         className={`${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
-                    {errors.username && <Form.Control.Feedback type="invalid">{t('field_required')}</Form.Control.Feedback>}
+                    {errors.username &&
+                        <Form.Control.Feedback type="invalid">{t('field_required')}</Form.Control.Feedback>}
                 </Form.Group>
 
                 <Form.Group controlId="email" className="mb-3">
@@ -69,7 +76,6 @@ const Register = () => {
                         <Form.Control.Feedback type="invalid">{t('invalid_format')}</Form.Control.Feedback>
                     )}
                 </Form.Group>
-
                 <Form.Group controlId="password" className="mb-3">
                     <Form.Label>{t('password')}</Form.Label>
                     <Form.Control
@@ -92,7 +98,6 @@ const Register = () => {
                         <Form.Control.Feedback type="invalid">{t('password_length')}</Form.Control.Feedback>
                     )}
                 </Form.Group>
-
                 <div className="text-center mt-5">
                     <Button
                         type="submit"

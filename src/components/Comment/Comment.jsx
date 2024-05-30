@@ -18,9 +18,6 @@ const Comment = ({itemId}) => {
     const [editingCommentId, setEditingCommentId] = useState(null);
     const {user, role, theme} = useAuth();
 
-    console.log('comments', comments)
-    console.log(user)
-
 
     const getAllComments = async () => {
         try {
@@ -170,7 +167,7 @@ const Comment = ({itemId}) => {
                                             : <div className='text-muted'>{t("user_deleted")}</div>
                                         }
                                     </Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted">
+                                    <Card.Subtitle className="mb-2">
                                         {formatDate(comment.attributes.publishedAt)}
                                     </Card.Subtitle>
                                     {editingCommentId === comment?.id ? (
@@ -232,8 +229,6 @@ const Comment = ({itemId}) => {
                                                     </div>
                                                 )
                                             )}
-
-
                                         </>
                                     )}
                                 </Card.Body>

@@ -16,7 +16,8 @@ const LikeHandler = ({itemId}) => {
         const fetchLikeStatus = async () => {
             if (user) {
                 try {
-                    const response = await api.get(`/likes?filters[item][id][$eq]=${itemId}&filters[user][id][$eq]=${user.id}`);
+                    const response = await api.get(
+                        `/likes?filters[item][id][$eq]=${itemId}&filters[user][id][$eq]=${user.id}`);
                     if (response?.data?.length > 0) {
                         setLiked(true);
                         setLikeId(response?.data[0]?.id);

@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Alert } from 'react-bootstrap';
+import React, {useState} from 'react';
+import {useForm} from "react-hook-form";
+import {useTranslation} from "react-i18next";
+import {useAuth} from "../../context/AuthContext";
+import {useNavigate} from "react-router-dom";
+import {Alert, Button, Container, Form} from 'react-bootstrap';
 import api from "../utils/api";
 
 const Login = () => {
-    const { t } = useTranslation();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const {t} = useTranslation();
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}
+    }
+        = useForm();
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const { login, theme } = useAuth();
+    const {login, theme} = useAuth();
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
@@ -35,6 +40,7 @@ const Login = () => {
         }
     };
 
+
     return (
         <Container className="vh-100 d-flex justify-content-center align-items-center">
             <Form className={`col-lg-6 w-50`} onSubmit={handleSubmit(onSubmit)}>
@@ -51,7 +57,6 @@ const Login = () => {
                     />
                     <Form.Control.Feedback type="invalid">{errors.email && t("field_required")}</Form.Control.Feedback>
                 </Form.Group>
-
                 <Form.Group controlId="password" className="mb-3">
                     <Form.Label>{t("password")}</Form.Label>
                     <Form.Control type="password"
@@ -66,11 +71,10 @@ const Login = () => {
                                   isInvalid={errors.password}
                                   className={`${theme === 'light' ? 'bg-light text-dark' : 'bg-dark text-light'}`}
                     />
-                    <Form.Control.Feedback type="invalid">{errors.password && errors.password.message}</Form.Control.Feedback>
+                    <Form.Control.Feedback
+                        type="invalid">{errors.password && errors.password.message}</Form.Control.Feedback>
                 </Form.Group>
-
                 {error && <Alert variant="danger">{error}</Alert>}
-
                 <div className={`text-center mt-5`}>
                     <Button type="submit" variant={`${theme === 'light' ? 'outline-dark' : 'outline-light'}`}
                             className="w-50 mb-4"

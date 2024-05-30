@@ -59,12 +59,10 @@ const EditItem = () => {
                         user: itemData.id || ''
                     });
                 }
-
                 if (collectionId) {
                     const collectionResponse = await api.get(`/collections/${collectionId}?populate=*`);
                     setCollection(collectionResponse.data);
                 }
-
                 const tagsResponse = await api.get('/tags');
                 const tags = tagsResponse.data.map(tag => tag.attributes.tags);
                 setAllTags(tags);
@@ -75,26 +73,21 @@ const EditItem = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, [id, collectionId]);
 
     const handleTagInputChange = (e) => {
         const inputValue = e.target.value;
         setItem({...item, tags: inputValue});
-
         if (inputValue.trim() === '') {
             setSuggestions([]);
             return;
         }
-
         const inputTags = inputValue.split(',').map(tag => tag.trim());
         const currentTag = inputTags[inputTags.length - 1].toLowerCase();
-
         const filteredSuggestions = allTags
             .filter(tag => !inputTags.includes(tag) && tag?.toLowerCase().startsWith(currentTag))
             .map(tag => ({tag, selected: false}));
-
         setSuggestions(filteredSuggestions);
     };
 
@@ -113,12 +106,10 @@ const EditItem = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-
         // Split tags by spaces and commas, trim whitespace, and filter out empty tags
         const inputTags = item.tags.split(/[\s,]+/).map(tag => tag.trim()).filter(tag => tag !== '');
         const existingTags = [];
         const newTags = [];
-
         inputTags.forEach(tag => {
             if (allTags.includes(tag)) {
                 existingTags.push(tag);
@@ -126,7 +117,6 @@ const EditItem = () => {
                 newTags.push(tag);
             }
         });
-
         const data = {
             name: item.name,
             tags: inputTags.join(', '),  // Join tags back into a string separated by commas
@@ -142,12 +132,10 @@ const EditItem = () => {
         if (image) {
             formData.append('files.image_url', image);
         }
-
         try {
             for (const tag of newTags) {
                 await api.post('/tags', {data: {tags: tag}});
             }
-
             const request = id === 'new'
                 ? api.post('/items', formData)
                 : api.put(`/items/${id}`, formData, {
@@ -155,7 +143,6 @@ const EditItem = () => {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-
             await request;
             navigate(`/collection/${collectionId || item.collection.id}`);
         } catch (error) {
@@ -180,7 +167,6 @@ const EditItem = () => {
                 return 'text';
         }
     };
-
 
     const handleFieldChange = (e) => {
         const {name, value, type, checked} = e.target;

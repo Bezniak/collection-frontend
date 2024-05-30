@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import Cookies from 'js-cookie';
 import api from "../components/utils/api";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
     const [theme, setTheme] = useState(Cookies.get('theme') || 'light');
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         document.body.className = theme;
-        Cookies.set('theme', theme, { expires: 365 });
+        Cookies.set('theme', theme, {expires: 365});
     }, [theme]);
 
     const fetchUserRole = async () => {
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
             if (res.role && res.role.type) {
                 setRole(res.role.type);
                 // Update cookie with the role
-                Cookies.set('me', JSON.stringify(res), { expires: 30 });
+                Cookies.set('me', JSON.stringify(res), {expires: 30});
                 setUser(res);
             }
         } catch (error) {
@@ -49,14 +49,14 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (userData) => {
         try {
-            Cookies.set('JWT', userData.jwt, { expires: 30 });
+            Cookies.set('JWT', userData.jwt, {expires: 30});
             // Fetch full user data with role
             const res = await api.get(`/users/me?populate=*`);
             if (res?.role?.type) {
                 setRole(res.role.type);
                 userData.user.role = res.role; // Ensure role is included in userData
             }
-            Cookies.set('me', JSON.stringify(userData.user), { expires: 30 });
+            Cookies.set('me', JSON.stringify(userData.user), {expires: 30});
             setUser(userData.user);
         } catch (error) {
             console.error('Failed to fetch user role during login:', error);
@@ -73,9 +73,9 @@ export const AuthProvider = ({ children }) => {
     const updateRole = (newRole) => {
         setRole(newRole);
         if (user) {
-            const updatedUser = { ...user, role: { ...user.role, type: newRole } };
+            const updatedUser = {...user, role: {...user.role, type: newRole}};
             setUser(updatedUser);
-            Cookies.set('me', JSON.stringify(updatedUser), { expires: 30 });
+            Cookies.set('me', JSON.stringify(updatedUser), {expires: 30});
         }
     };
 
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, role, login, logout, updateRole, theme, toggleTheme }}>
+        <AuthContext.Provider value={{user, role, login, logout, updateRole, theme, toggleTheme}}>
             {children}
         </AuthContext.Provider>
     );
