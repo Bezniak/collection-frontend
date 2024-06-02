@@ -6,6 +6,7 @@ import './Home.css';
 import {useTranslation} from "react-i18next";
 import Preloader from "../../components/Preloader/Preloader";
 import {useAuth} from "../../context/AuthContext";
+import {HiOutlinePhoto} from "react-icons/hi2";
 
 const Home = () => {
     const {t} = useTranslation();
@@ -141,16 +142,21 @@ const Home = () => {
                                             className={`item-card ${theme === "light" ? "bg-light" : "bg-dark border-light"}`}
                                         >
                                             <Card.Body
-                                                className='d-flex align-items-center justify-content-center gap-5'>
+                                                className='d-flex flex-wrap align-items-center justify-content-center gap-5'>
 
-                                                {item.img && (
-                                                    <Image
-                                                        src={item.img}
-                                                        alt={item.name}
-                                                        className="custom-image"
-                                                        rounded
-                                                    />
-                                                )}
+                                                {item.img ? (
+                                                        <Image
+                                                            src={item.img}
+                                                            alt={item.name}
+                                                            className="custom-image"
+                                                            rounded
+                                                        />
+                                                    )
+                                                    : (
+                                                        <HiOutlinePhoto
+                                                            style={{width: '50%', height: 'auto', color: "lightgray"}}/>
+                                                    )
+                                                }
                                                 <div
                                                     className='d-flex flex-column align-items-center justify-content-center'>
                                                     <Card.Title
@@ -177,20 +183,22 @@ const Home = () => {
                 </h1>
                 {largestCollections.length > 0 && (
                     <ListGroup
-                        className="container-fluid d-flex flex-row gap-4 justify-content-start align-items-center">
+                        className="container-fluid d-flex flex-wrap flex-row gap-4 align-items-center">
                         {largestCollections.map((collection, index) => (
                             <Link key={index} to={`/collection/${collection.id}`} className="text-decoration-none">
                                 <ListGroup.Item
-                                    className={`hover d-flex flex-column align-items-center justify-content-center gap-3 collection-item text-center ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}
+                                    className={`hover d-flex  flex-column align-items-center justify-content-center gap-3 collection-item text-center ${theme === 'light' ? 'bg-light' : 'bg-dark'}`}
                                 >
-                                    {collection.img && (
+                                    {collection.img ? (
                                         <Image
                                             src={collection.img}
                                             alt={collection.name}
                                             className="custom-image"
                                             rounded
                                         />
-                                    )}
+                                    )
+                                    : (<HiOutlinePhoto style={{width: '98px', height: 'auto', color: "lightgray"}}/>)
+                                    }
                                     <span className={`text ${theme === 'light' ? 'text-dark' : 'text-light'}`}>
                         {collection.name}
                     </span>
