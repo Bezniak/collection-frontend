@@ -14,7 +14,7 @@ import api from "../utils/api";
 
 const NavbarComponent = () => {
     const {t} = useTranslation();
-    const {currentLanguage, changeLanguage} = useLanguage();
+    const {changeLanguage} = useLanguage();
     const {user, logout, role, theme, toggleTheme} = useAuth();
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
