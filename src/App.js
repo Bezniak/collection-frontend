@@ -14,9 +14,9 @@ import EditCollection from "./components/EditCollection/EditCollection";
 import NotFound from "./components/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import SearchResults from "./components/NavbarComponent/SearchResults";
-import TicketForm from "./components/TicketForm/TicketForm";
 import UserProfile from "./components/UserProfile/UserProfile";
 import Footer from "./components/Footer/Footer";
+import TicketForm from "./components/TicketForm/TicketForm";
 
 
 const Layout = () => {
