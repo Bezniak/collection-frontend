@@ -23,8 +23,6 @@ const NavbarComponent = () => {
         logout();
     };
 
-    console.log(currentLanguage)
-
     const handleNavigate = (path) => {
         navigate(path);
     };
