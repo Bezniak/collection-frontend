@@ -14,7 +14,7 @@ import api from "../utils/api";
 
 const NavbarComponent = () => {
     const {t} = useTranslation();
-    const {currentLanguage, changeLanguage} = useLanguage();
+    const {changeLanguage} = useLanguage();
     const {user, logout, role, theme, toggleTheme} = useAuth();
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
@@ -101,6 +101,11 @@ const NavbarComponent = () => {
                                          variant='info'
                                          style={{marginRight: "5%"}}
                             >
+
+                                <NavDropdown.Item onClick={() => handleNavigate('/user-profile')}>
+                                    {t("my_profile")}
+                                </NavDropdown.Item>
+
                                 <NavDropdown.Item onClick={() => handleNavigate('/collections')}>
                                     {t("my_collections")}
                                 </NavDropdown.Item>
@@ -112,6 +117,9 @@ const NavbarComponent = () => {
                                         </NavDropdown.Item>
                                     </>
                                 )}
+
+
+
                             </NavDropdown>
                         )}
                     </Nav>

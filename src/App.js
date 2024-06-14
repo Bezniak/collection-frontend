@@ -14,16 +14,23 @@ import EditCollection from "./components/EditCollection/EditCollection";
 import NotFound from "./components/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import SearchResults from "./components/NavbarComponent/SearchResults";
+import UserProfile from "./components/UserProfile/UserProfile";
+import Footer from "./components/Footer/Footer";
+import TicketForm from "./components/TicketForm/TicketForm";
 
 
 const Layout = () => {
     return (
-        <div className='app'>
+        <div className="d-flex flex-column min-vh-100">
             <NavbarComponent/>
-            <Outlet/>
+            <div className="flex-grow-1">
+                <Outlet/>
+            </div>
+            <Footer/>
         </div>
     );
 };
+
 
 
 const router = createBrowserRouter([
@@ -75,6 +82,14 @@ const router = createBrowserRouter([
             {
                 path: "/search",
                 element: <SearchResults/>
+            },
+            {
+                path: "/ticket-form",
+                element: <TicketForm/>
+            },
+            {
+                path: "/user-profile",
+                element: <UserProfile/>
             },
         ]
     },
