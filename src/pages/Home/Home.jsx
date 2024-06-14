@@ -146,7 +146,7 @@ const Home = () => {
 
                                                 {item.img ? (
                                                         <Image
-                                                            src={item.img}
+                                                            src={process.env.REACT_APP_UPLOAD_URL + item.img}
                                                             alt={item.name}
                                                             className="custom-image"
                                                             rounded
@@ -191,7 +191,7 @@ const Home = () => {
                                 >
                                     {collection.img ? (
                                         <Image
-                                            src={collection.img}
+                                            src={process.env.REACT_APP_UPLOAD_URL + collection.img}
                                             alt={collection.name}
                                             className="custom-image"
                                             rounded

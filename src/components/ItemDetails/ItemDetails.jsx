@@ -67,7 +67,7 @@ const ItemDetails = () => {
                 <div className="col-md-4 text-center">
                     {item?.attributes?.image_url?.data?.attributes?.url ? (
                         <img
-                            src={item?.attributes?.image_url?.data?.attributes?.url}
+                            src={process.env.REACT_APP_UPLOAD_URL + item?.attributes?.image_url?.data?.attributes?.url}
                             alt={item?.attributes?.image_url?.data?.attributes?.name}
                             className="img-fluid rounded shadow-sm"
                             style={{maxWidth: '100%', height: 'auto'}}
